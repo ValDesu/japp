@@ -1,0 +1,201 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.card-holder {
+  position: absolute;
+  padding-left: 10px;
+  white-space: nowrap;
+
+  overflow-y: hidden;
+  overflow-x: auto;
+
+  top: 0;
+  left: 0;
+
+  background-color: rgba(255, 255, 255, 0.058);
+  height: 230px;
+  width: 100%;
+  
+  border-radius: 0 0 15px 15px;
+  transition: all 0.3s ease-in-out;
+}
+
+.card-holder-hidden {
+  top: -250px;
+}
+
+.App {
+  background: linear-gradient(-45deg, #424549, #35373b, #3b3e41, #383b3e);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+  position: relative;
+  height: 100vh;
+}
+
+.hero {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hero-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  color: white;
+}
+
+.logo {
+  width: 30%;
+  margin-bottom: 5px;
+}
+.search-bar {
+  background: transparent;
+  border: 2px solid rgb(51, 230, 153);
+  border-radius: 5px;
+  color: rgb(51, 230, 153);
+  padding: 10px;
+  width: 50%;
+  max-width: 500px;
+  font-size: 1.2rem;
+}
+
+.search-bar:focus {
+  outline: none;
+}
+
+.blur {
+  filter: blur(13px);
+}
+
+.bubble-menu {
+  position: absolute;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  z-index: 10;
+  background-color: rgb(51, 230, 153);
+
+  bottom: 3rem;
+  right: 3rem;
+
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 13px 0 rgba(0, 0, 0, 0.3);
+}
+
+.bubble-menu:hover {
+  transform: scale(1.1);
+}
+
+.bubble-text {
+  position: absolute;
+  left: .7rem;
+
+  font-size: 3rem;
+  color: white;
+  padding: 0.5rem;
+}
+
+.display-none {
+  display: none;
+}
+
+.bubble-notification {
+  position:absolute;
+  top: -1.3rem;
+  right: -.7rem;
+  font-size: 1rem;
+  color: black;
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  text-align: center;
+
+  animation: bubblePop 0.5s ease-in-out;
+}
+
+.bubble-menu-item {
+  position: absolute;
+  width: 15rem;
+  height: 3rem;
+  border-radius: 5rem;
+  z-index: 10;
+  background-color: #33e699;
+  color: #36383c;
+  align-items:center;
+  justify-content: right;
+  display: flex;
+
+  bottom: 12rem;
+  right: 2rem;
+
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 13px 0 rgba(0, 0, 0, 0.079);
+}
+
+.bubble-menu-text {
+  position: absolute;
+  right: 1rem;
+
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 0.5rem;
+}
+
+.bubble-menu-item:hover {
+  transform: scale(1.05);
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes bubblePop {
+  0% {
+    transform: scale(0) rotate(-10deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) rotate(10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
