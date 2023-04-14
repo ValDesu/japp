@@ -92,9 +92,16 @@ const ModalNameInput = styled.input`
     width: 60%;
 `;
 
+const ModalRemoveButton = styled.button`
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+`;
 
 
-const ModalComponent = ({ children, isOpen, onClose, onSave }) => {
+const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromModal }) => {
     return (
         <ModalContainer isOpen={isOpen}>
             <ModalContent>
@@ -109,6 +116,7 @@ const ModalComponent = ({ children, isOpen, onClose, onSave }) => {
                                 <ModalTableHeader>Card</ModalTableHeader>
                                 <ModalTableHeader>Reading</ModalTableHeader>
                                 <ModalTableHeader>Meaning</ModalTableHeader>
+                                <ModalTableHeader>Actions</ModalTableHeader>
                             </tr>
                         </thead>
                         <tbody>
@@ -118,6 +126,7 @@ const ModalComponent = ({ children, isOpen, onClose, onSave }) => {
                                         <ModalTableData>{child.slug}</ModalTableData>
                                         <ModalTableData>{child.japanese[0].reading}</ModalTableData>
                                         <ModalTableData>{child.senses[0].english_definitions.join(", ")}</ModalTableData>
+                                        <ModalTableData><ModalRemoveButton onClick={onRemoveCardFromModal} data-card-slug={child.slug}>❌</ModalRemoveButton></ModalTableData>
                                     </ModalTableRow>
                                 );
                             })}

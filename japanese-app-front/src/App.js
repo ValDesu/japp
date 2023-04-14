@@ -25,11 +25,20 @@ function App() {
   const onBookmarkClick = (card) => {
     //if the card slug is already in the savedCards array, we remove it
     if(savedCards.some((savedCard) => savedCard.slug === card.slug)){
-      setSavedCards((cards) => cards.filter((savedCard) => savedCard.slug !== card.slug));
+      filterCardsBySlug(card);
       return;
     }
 
     setSavedCards((cards) => [...cards, card]);
+  };
+
+  const onRemoveCardFromModal = (btn) => {
+    let cardSlug = btn.target.getAttribute("data-card-slug");
+    filterCardsBySlug({slug: cardSlug});
+  };
+
+  const filterCardsBySlug = (card) => {
+    setSavedCards((cards) => cards.filter((savedCard) => savedCard.slug !== card.slug));
   };
 
   const handleRequest =  (request) => {
@@ -76,7 +85,12 @@ function App() {
 
   return (
     <div className="App">
-      <ModalComponent isOpen={displayModalNewDeck} children={savedCards} onClose={setDisplayModalNewDeck.bind(this, false)}/>
+      <ModalComponent 
+        isOpen={displayModalNewDeck}
+        children={savedCards}
+        onClose={setDisplayModalNewDeck.bind(this, false)}
+        onRemoveCardFromModal={onRemoveCardFromModal}
+      />
       <div className="bubble-menu">
         <div className={`bubble-notification ${displayNotification}`} >
           <span className="bubble-notification-text">🔔</span>
