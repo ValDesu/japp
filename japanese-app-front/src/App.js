@@ -7,6 +7,7 @@ import CardComponent from "./components/CardComponent";
 import ModalComponent from "./components/ModalComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
+const API_DECKS = "http://localhost:3000/api/v1/decks/";
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -83,6 +84,25 @@ function App() {
     setRequestQueue((queue) => [...queue, event.target.value]);
   };
 
+  const onSaveFromModal = (btn) => {
+    let deckName = btn.target.getAttribute("data-deck-name");
+    createDeck(deckName, "").then((response) => {
+      if(response === -1) return;
+      let deckId = response.id;
+      console.log(deckId);
+    });
+  };
+
+  const createDeck = async (name, password) => {
+    try {
+      const response = await axios.post(API_DECKS, { name, password });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return -1;
+    }
+  };
+
   return (
     <div className="App">
       <ModalComponent 
@@ -90,6 +110,7 @@ function App() {
         children={savedCards}
         onClose={setDisplayModalNewDeck.bind(this, false)}
         onRemoveCardFromModal={onRemoveCardFromModal}
+        onSave={onSaveFromModal}
       />
       <div className="bubble-menu">
         <div className={`bubble-notification ${displayNotification}`} >
@@ -121,7 +142,7 @@ function App() {
             <p className="title is-5 has-text-white">Look for any word !</p>
             <input
               type="text"
-              placeholder="Rechercher..."
+              placeholder="探しましょうか..."
               className="search-bar"
               onChange={handleInputChange}
             />

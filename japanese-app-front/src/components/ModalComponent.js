@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useState } from "react";
 
 const ModalContainer = styled.div`
     display: ${props => props.isOpen ? 'flex' : 'none'};
@@ -102,6 +103,8 @@ const ModalRemoveButton = styled.button`
 
 
 const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromModal }) => {
+    const [deckName, setDeckName] = useState("");
+
     return (
         <ModalContainer isOpen={isOpen}>
             <ModalContent>
@@ -134,8 +137,8 @@ const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromMod
                     </ModalTable>
                 </ModalScrollBox>
             <ModalFooter>
-                <ModalNameInput type="text" placeholder="Deck name" maxLength={30}/>
-                <ModalValidationButton onClick={onSave}>Save</ModalValidationButton>
+                <ModalNameInput onChange={(e)=>setDeckName(e.target.value)} type="text" placeholder="Deck name" maxLength={30}/>
+                <ModalValidationButton onClick={onSave} data-deck-name={deckName}>Save</ModalValidationButton>
             </ModalFooter>
             </ModalContent>
             

@@ -10,12 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_18_052932) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_18_070044) do
   create_table "cards", force: :cascade do |t|
     t.string "front"
     t.string "back"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "decks", force: :cascade do |t|
+    t.string "name"
+    t.string "password"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_decks_on_name", unique: true
   end
 
 end
