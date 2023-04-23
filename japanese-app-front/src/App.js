@@ -5,11 +5,14 @@ import "bulma/css/bulma.min.css";
 import logo from "./logo.png";
 import CardComponent from "./components/CardComponent";
 import ModalComponent from "./components/ModalComponent";
+import LoadingScreenComponent from "./components/LoadingScreenComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
 
 function App() {
+  const [loading, setLoading] = useState(false);
+
   const [cards, setCards] = useState([]);
   const [blur, setBlur] = useState("");
   const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
@@ -85,17 +88,27 @@ function App() {
   };
 
   const onSaveFromModal = (btn) => {
+    setLoading(true);
+
     let deckName = btn.target.getAttribute("data-deck-name");
     createDeck(deckName, "").then((response) => {
-      if(response === -1) return;
-      let deckId = response.id;
-      console.log(deckId);
+      setLoading(false);
+      setDisplayModalNewDeck(false);
+      if(response === -1){
+        console.error("Error while creating deck");
+        //Display error message
+        return;
+      };
+      //display success message
+      setSavedCards([]);
+      setDisplayModalNewDeck(false);
+      console.log(response.id);
     });
   };
 
   const createDeck = async (name, password) => {
     try {
-      const response = await axios.post(API_DECKS, { name, password });
+      const response = await axios.post(API_DECKS, { name, password, cards: savedCards});
       return response.data;
     } catch (error) {
       console.error(error);
@@ -105,6 +118,7 @@ function App() {
 
   return (
     <div className="App">
+      {loading && <LoadingScreenComponent />}
       <ModalComponent 
         isOpen={displayModalNewDeck}
         children={savedCards}
@@ -153,6 +167,7 @@ function App() {
           </div>
         </div>
       </div>
+      
     </div>
   );
 }

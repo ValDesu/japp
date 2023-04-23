@@ -15,14 +15,36 @@ class Api::V1::DecksController < ApplicationController
 
   # POST /decks
   def create
+    #get cards from params
+    cards = params[:cards]
+    #create deck
     @deck = Deck.new(deck_params)
+    
 
     if @deck.save
+
+      #delete the deck if error occurs while creating cards
+      begin
+        #create cards
+        cards.each do |card|
+          @deck.cards.create({
+            front: card[:slug],
+            back: card[:senses].first[:english_definitions].first,
+            deck_id: @deck.id
+          })
+        end
+      rescue
+        @deck.destroy
+        render json: {error: "Error creating cards"}, status: :unprocessable_entity
+      end
+
       render json: @deck, status: :created
     else
       render json: @deck.errors, status: :unprocessable_entity
     end
   end
+
+
 
   # PATCH/PUT /decks/1
   def update
