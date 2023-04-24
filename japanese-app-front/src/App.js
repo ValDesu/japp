@@ -6,26 +6,52 @@ import logo from "./logo.png";
 import CardComponent from "./components/CardComponent";
 import ModalComponent from "./components/ModalComponent";
 import LoadingScreenComponent from "./components/LoadingScreenComponent";
+import FlashMessageComponent from "./components/FlashMessageComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
 
 function App() {
+  //Loading screen states
   const [loading, setLoading] = useState(false);
-
-  const [cards, setCards] = useState([]);
   const [blur, setBlur] = useState("");
-  const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
-  const [requestQueue, setRequestQueue] = useState([]);
-  const [filterCommun, setFilterCommun] = useState(false);
 
-  const [displayCardHolder, setDisplayCardHolder] = useState("card-holder-hidden");
-  const [displayNotification, setDisplayNotification] = useState("display-none");
+  //Flash message states
+  const [displayFlashMessage, setDisplayFlashMessage] = useState(false);
+  const [flashMessage, setFlashMessage] = useState("");
+  const [flashMessageType, setFlashMessageType] = useState("");
 
+  const displayFlashMessageHandler = (message, type) => {
+    setFlashMessage(message);
+    setFlashMessageType(type);
+    setDisplayFlashMessage(true);
+  };
+
+  useEffect(() => {
+    //setDisplayFlashMessage(false) after 7 seconds
+    if (displayFlashMessage) {
+      setTimeout(() => {
+        setDisplayFlashMessage(false);
+      }, 7000);
+    }
+  }, [displayFlashMessage]);
+
+  //Cards states
+  const [cards, setCards] = useState([]);
   const [savedCards, setSavedCards] = useState([]);
 
+  //Search states
+  const [requestQueue, setRequestQueue] = useState([]);
+  const [filterCommun, setFilterCommun] = useState(false);
+  const [displayCardHolder, setDisplayCardHolder] = useState("card-holder-hidden");
   const lastRequestItem = useRef('');
 
+  //Menu states
+  const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
+  const [displayNotification, setDisplayNotification] = useState("display-none");
+
+  
+  //User interaction handlers
   const onBookmarkClick = (card) => {
     //if the card slug is already in the savedCards array, we remove it
     if(savedCards.some((savedCard) => savedCard.slug === card.slug)){
@@ -93,15 +119,19 @@ function App() {
     let deckName = btn.target.getAttribute("data-deck-name");
     createDeck(deckName, "").then((response) => {
       setLoading(false);
-      setDisplayModalNewDeck(false);
       if(response === -1){
         console.error("Error while creating deck");
         //Display error message
+        displayFlashMessageHandler("Error while creating deck: name not unique", "error");
         return;
       };
-      //display success message
+
+
+      //Display success message
+      displayFlashMessageHandler("Deck created successfully", "success");
       setSavedCards([]);
       setDisplayModalNewDeck(false);
+
       console.log(response.id);
     });
   };
@@ -118,6 +148,7 @@ function App() {
 
   return (
     <div className="App">
+      {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}
       {loading && <LoadingScreenComponent />}
       <ModalComponent 
         isOpen={displayModalNewDeck}
