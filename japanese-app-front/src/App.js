@@ -117,7 +117,8 @@ function App() {
     setLoading(true);
 
     let deckName = btn.target.getAttribute("data-deck-name");
-    createDeck(deckName, "").then((response) => {
+    let deckPassword = btn.target.getAttribute("data-deck-password");
+    createDeck(deckName, deckPassword).then((response) => {
       setLoading(false);
       if(response === -1){
         console.error("Error while creating deck");
