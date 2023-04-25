@@ -7,6 +7,8 @@ import CardComponent from "./components/CardComponent";
 import ModalComponent from "./components/ModalComponent";
 import LoadingScreenComponent from "./components/LoadingScreenComponent";
 import FlashMessageComponent from "./components/FlashMessageComponent";
+import MenuComponent from "./components/MenuComponent";
+import MenuItemComponent from "./components/MenuItemComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
@@ -48,7 +50,7 @@ function App() {
 
   //Menu states
   const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
-  const [displayNotification, setDisplayNotification] = useState("display-none");
+  const [displayNotification, setDisplayNotification] = useState("none");
 
   
   //User interaction handlers
@@ -100,7 +102,7 @@ function App() {
     if(savedCards.length > 0){
       setDisplayNotification("");
     }else{
-      setDisplayNotification("display-none");
+      setDisplayNotification("none");
     }
   }
   , [savedCards]);
@@ -158,15 +160,15 @@ function App() {
         onRemoveCardFromModal={onRemoveCardFromModal}
         onSave={onSaveFromModal}
       />
-      <div className="bubble-menu">
-        <div className={`bubble-notification ${displayNotification}`} >
-          <span className="bubble-notification-text">🔔</span>
-        </div>
-        <span className="bubble-text">✒️</span>
-      </div>
-      <div className="bubble-menu-item" onClick={setDisplayModalNewDeck.bind(this, true)}>
-          <span className="bubble-menu-text" >Make a new deck</span>
-      </div>
+
+      <MenuComponent 
+        displayNotification={displayNotification}
+        //Menu items functions
+        onCreateNewDeck={setDisplayModalNewDeck.bind(this, true)}
+      />
+      
+
+      
       <div className={`card-holder ${blur} ${displayCardHolder}`} >
         {cards.map((card) => (
           <CardComponent
