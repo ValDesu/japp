@@ -53,14 +53,75 @@ const ModalTable = styled.table`
 `;
 
 const ModalTableHeader = styled.th`
-    border: 1px solid #ddd;
+    border: none;
     padding: 8px;
+    color: rgb(180 180 180);
+    text-align: center;
+    vertical-align: middle;
+
+    &:hover {
+        color: rgb(150 150 150);
+    }
 `;
 
 const ModalTableRow = styled.tr`
-    border: 1px solid #ddd;
+    border: none;
     padding: 8px;
+    text-align: center;
 `;
+
+//spaced out for readability
+const DeckNameTableCell = styled.td`
+    border: solid 3px white;
+    padding: 8px;
+    background-color: rgb(230 230 230);
+    border-radius: 0.5rem;
+    font-weight: bold;
+    margin: 3px;
+
+    transition: scale 0.3s ease-in-out;
+
+    &:hover {
+        background-color: rgb(200 200 200);
+        scale: 0.98;
+    }
+    
+`;
+
+const CardNumberTableCell = styled.td`
+
+    padding: 8px;
+
+    border-radius: 50%;
+    font-weight: bold;
+    margin: 3px;
+    width: 0.3rem;
+    text-align: right;
+    vertical-align: middle;
+
+`;
+
+//action button green circle with white icon
+const ActionButton = styled.button`
+    background-color: rgb(240, 240, 240);
+    border: none;
+    border-radius: 50%;
+    padding: 8px;
+    margin: 3px;
+    cursor: pointer;
+    transition: scale 0.3s ease-in-out;
+    color: white;
+    margin-right: 0.5rem;
+
+    &:hover {
+        scale: 1.2;
+    }
+
+    &:focus {
+        outline: none;
+    }
+`;
+
 
 
 const ModalDeckList = ({isOpen, onClose ,decks}) => {
@@ -82,15 +143,21 @@ const ModalDeckList = ({isOpen, onClose ,decks}) => {
                             <tr>
                                 <ModalTableHeader>Deck Name</ModalTableHeader>
                                 <ModalTableHeader>Cards</ModalTableHeader>
+                                <ModalTableHeader>Sample</ModalTableHeader>
                                 <ModalTableHeader>Actions</ModalTableHeader>
                             </tr>
                         </thead>
                         <tbody>
                             {decks.map((deck) => (
                                 <ModalTableRow key={deck.id}>
-                                    <td>{deck.name}</td>
-                                    <td>{deck.cards.length} ({deckSampleCards(deck.cards)}, )</td>
-                                    <td>(...)</td>
+                                    <DeckNameTableCell>{deck.name}</DeckNameTableCell>
+                                    <CardNumberTableCell>{deck.cards.length}</CardNumberTableCell>
+                                    <td>{deckSampleCards(deck.cards)}</td>
+                                    <td>
+                                        <ActionButton>💚</ActionButton>
+                                        <ActionButton>📝</ActionButton>
+                                        <ActionButton>📤</ActionButton>
+                                    </td>
                                 </ModalTableRow>
                             ))}
                         </tbody>
