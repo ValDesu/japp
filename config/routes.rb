@@ -4,7 +4,10 @@ Rails.application.routes.draw do
   namespace :api do 
     namespace :v1 do
       resources :cards
-      resources :decks
+      #resources :decks
+      get '/decks/search', to: 'decks#search'
+      post '/decks', to: 'decks#create'
+
       get '/jisho/:word', to: 'jisho#getWord'
       get '/jisho/commun/:word', to: 'jisho#getCommunWord'
     end

@@ -13,6 +13,25 @@ class Api::V1::DecksController < ApplicationController
     render json: @deck
   end
 
+  # GET /decks/search
+  def search
+    if !params[:name] || params[:name].empty?
+      #if name empty, return all decks
+      @decks = Deck.all
+    else
+      #if name not empty, search for deck containing name, limit to 10 results
+      @decks = Deck.where("name LIKE ?", "%#{params[:name]}%").offset(params[:page]*10).limit(10)    
+    end
+
+    if @decks
+      #render json: @decks with cards relation
+      render json: @decks.to_json(include: :cards)
+    else
+      render json: {error: "Deck not found"}, status: :not_found
+    end
+  end
+
+
   # POST /decks
   def create
     #get cards from params

@@ -49,10 +49,25 @@ function App() {
   const [displayCardHolder, setDisplayCardHolder] = useState("card-holder-hidden");
   const lastRequestItem = useRef('');
 
+  //Decks states
+  const [decks, setDecks] = useState([]);
+
   //Menu states
   const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
   const [displayModalDeckList, setDisplayModalDeckList] = useState(false);
   const [displayNotification, setDisplayNotification] = useState("none");
+
+  const displayModalDeckListHandler = ({name = "", page = 0}) => {
+    setDisplayModalDeckList((prevState) => !prevState);
+    setLoading(true);
+    axios.get(API_DECKS + "search/", { params: {'name': name, 'page': page} }).then((response) => {
+      setLoading(false);
+      setDecks(response.data);
+      console.log(response.data);
+    });
+  };
+
+
 
   
   //User interaction handlers
@@ -109,6 +124,7 @@ function App() {
   }
   , [savedCards]);
 
+
   const handleInputChange = (event) => {
     let valid = event.target.value.length > 0;
     setDisplayCardHolder( !valid ? "card-holder-hidden" : "");
@@ -160,7 +176,7 @@ function App() {
       <ModalDeckList
         isOpen={displayModalDeckList}
         onClose={setDisplayModalDeckList.bind(this, false)}
-        decks={[]}
+        decks={decks}
       />
       <ModalComponent 
         isOpen={displayModalNewDeck}
@@ -174,7 +190,7 @@ function App() {
         displayNotification={displayNotification}
         //Menu items functions
         onCreateNewDeck={setDisplayModalNewDeck.bind(this, true)}
-        onDeckList={setDisplayModalDeckList.bind(this, true)}
+        onDeckList={displayModalDeckListHandler.bind(this, {'name': "", 'page': 0})}
       />
       
 

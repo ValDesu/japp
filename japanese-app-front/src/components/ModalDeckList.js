@@ -64,6 +64,11 @@ const ModalTableRow = styled.tr`
 
 
 const ModalDeckList = ({isOpen, onClose ,decks}) => {
+    const deckSampleCards = (cards) => {
+        //return string of the first 3 cards.front
+        return cards.slice(0,3).map((card) => card.front).join(", ");
+    };
+
     return(
         <ModalContainer isOpen={isOpen}>
             <ModalContent>
@@ -76,16 +81,16 @@ const ModalDeckList = ({isOpen, onClose ,decks}) => {
                         <thead>
                             <tr>
                                 <ModalTableHeader>Deck Name</ModalTableHeader>
-                                <ModalTableHeader>Deck Description</ModalTableHeader>
-                                <ModalTableHeader>Deck Cards</ModalTableHeader>
+                                <ModalTableHeader>Cards</ModalTableHeader>
+                                <ModalTableHeader>Actions</ModalTableHeader>
                             </tr>
                         </thead>
                         <tbody>
                             {decks.map((deck) => (
                                 <ModalTableRow key={deck.id}>
                                     <td>{deck.name}</td>
-                                    <td>{deck.description}</td>
-                                    <td>{deck.cards.length}</td>
+                                    <td>{deck.cards.length} ({deckSampleCards(deck.cards)}, )</td>
+                                    <td>(...)</td>
                                 </ModalTableRow>
                             ))}
                         </tbody>
