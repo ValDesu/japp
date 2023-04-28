@@ -58,7 +58,7 @@ function App() {
   const [displayNotification, setDisplayNotification] = useState("none");
 
   const displayModalDeckListHandler = ({name = "", page = 0}) => {
-    setDisplayModalDeckList((prevState) => !prevState);
+    setDisplayModalDeckList(true);
     setLoading(true);
     axios.get(API_DECKS + "search/", { params: {'name': name, 'page': page} }).then((response) => {
       setLoading(false);
@@ -66,9 +66,6 @@ function App() {
       console.log(response.data);
     });
   };
-
-
-
   
   //User interaction handlers
   const onBookmarkClick = (card) => {
@@ -177,6 +174,7 @@ function App() {
         isOpen={displayModalDeckList}
         onClose={setDisplayModalDeckList.bind(this, false)}
         decks={decks}
+        onSearch={displayModalDeckListHandler}
       />
       <ModalComponent 
         isOpen={displayModalNewDeck}

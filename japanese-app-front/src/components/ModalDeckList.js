@@ -78,6 +78,7 @@ const DeckNameTableCell = styled.td`
     border-radius: 0.5rem;
     font-weight: bold;
     margin: 3px;
+    cursor: pointer;
 
     transition: scale 0.3s ease-in-out;
 
@@ -116,19 +117,79 @@ const ActionButton = styled.button`
     &:hover {
         scale: 1.2;
     }
+`;
 
-    &:focus {
-        outline: none;
+const SearchBar = styled.input`
+    border: solid 1px rgb(180 180 180);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    width: 40%;
+    font-size: 1rem;
+    padding-left: 1rem;
+    padding-top: 0.5rem;
+`;
+
+const ModalFooter = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+`;
+
+const ButtonNextPage = styled.button`
+    background-color: rgb(240, 240, 240);
+    border: none;
+    border-radius: 50%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    width: 5%;
+    font-size: 1rem;
+    rotate: ${props => props.rotation}deg;
+
+    color:rgb(100 100 100);
+    font-size: 1rem; 
+    font-weight: bold;
+    cursor: pointer;
+    transition: scale 0.3s ease-in-out;
+
+    &:hover {
+        scale: 1.1;
     }
+`;
+
+const SearchButton = styled.button`
+    background-color: rgb(240, 240, 240);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    width: 10%;
+    font-size: 1rem;
+
+    color:rgb(100 100 100);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
 `;
 
 
 
-const ModalDeckList = ({isOpen, onClose ,decks}) => {
+
+
+const ModalDeckList = ({isOpen, onClose, onSearch ,decks}) => {
     const deckSampleCards = (cards) => {
         //return string of the first 3 cards.front
         return cards.slice(0,3).map((card) => card.front).join(", ");
     };
+
+    const searchDeckHandler = (e) => {
+        e.preventDefault();
+        onSearch({name: searchTerm, page: searchPage});
+    };
+
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchPage, setSearchPage] = useState(0);
 
     return(
         <ModalContainer isOpen={isOpen}>
@@ -163,6 +224,17 @@ const ModalDeckList = ({isOpen, onClose ,decks}) => {
                         </tbody>
                     </ModalTable>
                 </ModalScrollBox>
+                <ModalFooter>
+                    <ButtonNextPage rotation={'-90'}>🛆</ButtonNextPage>
+                    <SearchBar 
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Search decks..."
+                        onKeyDown={(e) => {if(e.key === 'Enter') searchDeckHandler(e)}}
+                    />
+                    <SearchButton onClick={(e) => searchDeckHandler(e)}>Search</SearchButton>
+                    <ButtonNextPage rotation={'90'}>🛆</ButtonNextPage>
+
+                </ModalFooter>
             </ModalContent>
         </ModalContainer>
     );

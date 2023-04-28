@@ -19,8 +19,8 @@ class Api::V1::DecksController < ApplicationController
       #if name empty, return all decks
       @decks = Deck.all
     else
-      #if name not empty, search for deck containing name, limit to 10 results
-      @decks = Deck.where("name LIKE ?", "%#{params[:name]}%").offset(params[:page]*10).limit(10)    
+      #if name not empty, search for deck containing name, limit to 6 results
+      @decks = Deck.where("name LIKE ?", "%#{params[:name]}%").offset(params[:page]*6).limit(6)    
     end
 
     if @decks
