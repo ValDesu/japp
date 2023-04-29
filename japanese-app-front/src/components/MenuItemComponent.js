@@ -23,6 +23,14 @@ const BubbleMenuItem = styled.div`
     &:hover {
         transform: scale(1.05);
     }
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        width: 10rem;
+        height: 2rem;
+        bottom: ${props => 7 + props.bottom*3}rem;
+        right: ${props => props.displayItems ? '1rem' : '-10rem'};
+    }
 `;
 
 const BubbleMenuItemText = styled.span`
@@ -32,6 +40,12 @@ const BubbleMenuItemText = styled.span`
   font-size: 1.2rem;
   font-weight: 500;
   padding: 0.5rem;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        font-size: 1rem;
+        right: .5rem;
+    }
 `;
 
 

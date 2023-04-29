@@ -21,6 +21,19 @@ const BubbleMenu = styled.div`
     &:hover {
         transform: scale(1.1);
     }
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        width: 4rem;
+        height: 4rem;
+        bottom: 1rem;
+        right: 1rem;
+    }
+
+    @media (max-height: 500px) {
+        bottom: 3rem;
+        left: 3rem;
+    }
 `;
 
 const BubbleNotification = styled.div`
@@ -38,6 +51,15 @@ const BubbleNotification = styled.div`
   text-align: center;
 
   animation: bubblePop 0.5s ease-in-out;
+
+  //adapt to mobile
+    @media (max-width: 907px) {
+        top: -.9rem;
+        right: -.5rem;
+        width: 2rem;
+        height: 2rem;
+        font-size: .8rem;
+    }
 `;
 
 const BubbleText = styled.span`
@@ -47,6 +69,12 @@ const BubbleText = styled.span`
   font-size: 3rem;
   color: white;
   padding: 0.5rem;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        font-size: 1.8rem;
+        left: .5rem;
+    }
 `;
 
 

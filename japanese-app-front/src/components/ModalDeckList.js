@@ -12,6 +12,14 @@ const ModalContainer = styled.div`
     z-index: 10;
     justify-content: center;
     align-items: center;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        align-items: flex-start;
+
+    }
+
+
 `;
 
 const ModalContent = styled.div`
@@ -20,11 +28,23 @@ const ModalContent = styled.div`
     border-radius: 0.5rem;
     width: 70%;
     height: 50%;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
 `;
 
 const ModalScrollBox = styled.div`
     overflow-y: scroll;
     height: 70%;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        height: 80%;
+    }
 `;
 
 const ModalHeader = styled.div`
@@ -62,12 +82,27 @@ const ModalTableHeader = styled.th`
     &:hover {
         color: rgb(150 150 150);
     }
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        display: none;
+    }
+
 `;
 
 const ModalTableRow = styled.tr`
     border: none;
     padding: 8px;
     text-align: center;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-top: solid 2rem rgb(245 245 245);
+    }
 `;
 
 //spaced out for readability
@@ -156,6 +191,11 @@ const ButtonNextPage = styled.button`
     &:hover {
         scale: 1.1;
     }
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        width: 8%;
+    }
 `;
 
 const SearchButton = styled.button`
@@ -231,7 +271,9 @@ const ModalDeckList = ({isOpen, onClose, onSearch ,decks}) => {
                         placeholder="Search decks..."
                         onKeyDown={(e) => {if(e.key === 'Enter') searchDeckHandler(e)}}
                     />
-                    <SearchButton onClick={(e) => searchDeckHandler(e)}>Search</SearchButton>
+                    {
+                    //<SearchButton onClick={(e) => searchDeckHandler(e)}>Search</SearchButton>
+                    }
                     <ButtonNextPage rotation={'90'}>🛆</ButtonNextPage>
 
                 </ModalFooter>

@@ -12,6 +12,11 @@ const ModalContainer = styled.div`
     z-index: 10;
     justify-content: center;
     align-items: center;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        align-items: flex-start;
+    }
 `;
 
 const ModalContent = styled.div`
@@ -20,6 +25,13 @@ const ModalContent = styled.div`
     border-radius: 0.5rem;
     width: 70%;
     height: 50%;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
 `;
 
 const ModalScrollBox = styled.div`
