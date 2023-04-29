@@ -28,7 +28,7 @@ const BubbleMenuItem = styled.div`
     @media (max-width: 907px) {
         width: 10rem;
         height: 2rem;
-        bottom: ${props => 7 + props.bottom*3}rem;
+        bottom: ${props => 10 + props.bottom*3}rem;
         right: ${props => props.displayItems ? '1rem' : '-10rem'};
     }
 `;

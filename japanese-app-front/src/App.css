@@ -3,6 +3,14 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  background-color: #35373b;
+}
+
+*{
+  border: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .card-holder {

@@ -26,8 +26,8 @@ const BubbleMenu = styled.div`
     @media (max-width: 907px) {
         width: 4rem;
         height: 4rem;
-        bottom: 1rem;
-        right: 1rem;
+        bottom: 5rem;
+        right: 2rem;
     }
 
     @media (max-height: 500px) {
