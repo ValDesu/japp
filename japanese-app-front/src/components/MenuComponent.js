@@ -78,7 +78,7 @@ const BubbleText = styled.span`
 `;
 
 
-const MenuComponent = ({displayNotification, onCreateNewDeck, onDeckList}) => {
+const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList}) => {
     const [displayItems, setDisplayItems] = useState(false);
     
     const OnClickMenuItemsAndHide = (func) => {
@@ -107,7 +107,7 @@ const MenuComponent = ({displayNotification, onCreateNewDeck, onDeckList}) => {
         />
 
         <MenuItemComponent display={displayItems}
-            btnFunction={() => console.log("Edit my decks")}
+            btnFunction={OnClickMenuItemsAndHide.bind(this, onEdit)}
             text={"Edit my decks"}
             bottom={2}
         />

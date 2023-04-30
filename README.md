@@ -37,6 +37,7 @@ We're always working to improve JAPP, and we have big plans for the future, incl
 
 - Authentication with Google account to keep track of your activities and stats! 🔐
 - Continued development and optimization to make JAPP the best Japanese learning app on the market! 🥇
+- Using AI to generate personalized output exercices based on your deck's vocab, and give you feedback ! 🤖
 
 ## 🎉 Let's Get Started!
 

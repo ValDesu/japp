@@ -10,6 +10,7 @@ import FlashMessageComponent from "./components/FlashMessageComponent";
 import MenuComponent from "./components/MenuComponent";
 import MenuItemComponent from "./components/MenuItemComponent";
 import ModalDeckList from "./components/ModalDeckList";
+import ModalEditComponent from "./components/ModalEditComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
@@ -55,6 +56,7 @@ function App() {
   //Menu states
   const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
   const [displayModalDeckList, setDisplayModalDeckList] = useState(false);
+  const [displayModalEdit, setDisplayModalEdit] = useState(false);
   const [displayNotification, setDisplayNotification] = useState("none");
 
   const displayModalDeckListHandler = ({name = "", page = 0}) => {
@@ -170,12 +172,19 @@ function App() {
       {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}
       {loading && <LoadingScreenComponent />}
 
+      <ModalEditComponent
+        isOpen={displayModalEdit}
+        onClose={setDisplayModalEdit.bind(this, false)}
+        onEdit={() => {}}
+      />
+
       <ModalDeckList
         isOpen={displayModalDeckList}
         onClose={setDisplayModalDeckList.bind(this, false)}
         decks={decks}
         onSearch={displayModalDeckListHandler}
       />
+
       <ModalComponent 
         isOpen={displayModalNewDeck}
         children={savedCards}
@@ -189,6 +198,7 @@ function App() {
         //Menu items functions
         onCreateNewDeck={setDisplayModalNewDeck.bind(this, true)}
         onDeckList={displayModalDeckListHandler.bind(this, {'name': "", 'page': 0})}
+        onEdit={setDisplayModalEdit.bind(this, true)}
       />
       
 
