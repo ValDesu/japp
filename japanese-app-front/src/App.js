@@ -52,6 +52,8 @@ function App() {
 
   //Decks states
   const [decks, setDecks] = useState([]);
+  const [isEdeiting, setIsEditing] = useState(false);
+  const [currentDeck, setCurrentDeck] = useState({name: "", password: ""});
 
   //Menu states
   const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
@@ -67,6 +69,26 @@ function App() {
       setDecks(response.data);
       console.log(response.data);
     });
+  };
+
+  const onDeckEdit = ({name = null, password = null}) => {
+    setLoading(true);
+    axios.get(API_DECKS + "edit/", { params: {'name': name, 'password': password} }).then((response) => {
+      console.log(response.data);
+
+      setSavedCards(response.data.cards);
+      setIsEditing(true);
+      setCurrentDeck({name: name, password: password});
+
+      setDisplayModalEdit(false);
+      displayFlashMessageHandler("Deck loaded successfully !", "success");
+    }).catch((error) => {
+      console.log(error.response.data.error);
+      displayFlashMessageHandler(error.response.data.error, "error");
+    }).finally(() => {
+      setLoading(false);
+    });
+
   };
   
   //User interaction handlers
@@ -166,6 +188,8 @@ function App() {
     }
   };
 
+
+
   return (
     <div className="App">
       
@@ -175,7 +199,7 @@ function App() {
       <ModalEditComponent
         isOpen={displayModalEdit}
         onClose={setDisplayModalEdit.bind(this, false)}
-        onEdit={() => {}}
+        onEdit={onDeckEdit}
       />
 
       <ModalDeckList

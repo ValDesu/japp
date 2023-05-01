@@ -8,6 +8,19 @@ class Api::V1::DecksController < ApplicationController
     render json: @decks
   end
 
+  #GET /decks/edit
+  def edit
+    if params[:name] && params[:password]
+      @deck = Deck.find_by(name: params[:name], password: params[:password])
+    end
+
+    if @deck
+      render json: @deck.to_json(include: :cards), status: :ok
+    else
+      render json: {error: "Name or Password might be wrong."}, status: :not_found
+    end
+  end
+
   # GET /decks/1
   def show
     render json: @deck
@@ -24,10 +37,11 @@ class Api::V1::DecksController < ApplicationController
     end
 
     if @decks
-      #render json: @decks with cards relation
-      render json: @decks.to_json(include: :cards)
+      #render json: @decks with cards relation, only include the first 3 cards
+      render json: @decks.to_json(include: {cards: {only: [:front]}}), status: :ok
+      
     else
-      render json: {error: "Deck not found"}, status: :not_found
+      render json: {error: "No match for this name."}, status: :not_found
     end
   end
 

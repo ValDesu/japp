@@ -5,7 +5,7 @@ const ModalContainer = styled.div`
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 10;
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
@@ -88,6 +88,10 @@ const ModalEditComponent = ({isOpen, onClose, onEdit}) => {
     const [deckName, setDeckName] = useState('');
     const [deckPassword, setDeckPassword] = useState('');
 
+    const handleEdit = () => {
+        onEdit({name: deckName, password: deckPassword});
+    };
+
     return (
         <ModalContainer isOpen={isOpen}>
             <ModalContent>
@@ -98,7 +102,7 @@ const ModalEditComponent = ({isOpen, onClose, onEdit}) => {
                 <ModalLoginContainer>
                     <ModalLoginInput onChange={(e) => {setDeckName(e.target.value)}} type="text" placeholder="Deck name" />
                     <ModalLoginInput onChange={(e) => {setDeckPassword(e.target.value)}} type="password" placeholder="Deck password" />
-                    <ModalLoginButton onClick={onEdit({deckName, deckPassword})}>Edit</ModalLoginButton>
+                    <ModalLoginButton onClick={handleEdit}>Edit</ModalLoginButton>
                 </ModalLoginContainer>
                 
             </ModalContent>
