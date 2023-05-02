@@ -85,15 +85,15 @@ const CardButton = styled.button`
   }
 `;
 
-const CardComponent = ({ title, reading, description, pillText, onBookmarkClick, isCommun, isSaved }) => {
+const CardComponent = ({ title, reading, description, pillText, onBookmarkClick, isCommon, isSaved }) => {
   return (
-    <CardContainer isCommun={isCommun}>
+    <CardContainer isCommon={isCommon}>
       <div className="card-content">
         <CardReading>{reading}</CardReading>
         <CardTitle className="title">{title}</CardTitle>
         <CardDescription className="subtitle">{description}</CardDescription>
 
-        {pillText ? <Pill>{pillText.substring(5).toUpperCase()}</Pill> : <EmptyPill>N0</EmptyPill>}
+        {pillText ? <Pill>N{pillText}</Pill> : <EmptyPill>N0</EmptyPill>}
         <CardButton isSaved={isSaved} onClick={onBookmarkClick}>🔖</CardButton>
         
       </div>

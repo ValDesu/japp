@@ -10,13 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_23_022255) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_02_010110) do
   create_table "cards", force: :cascade do |t|
-    t.string "front"
-    t.string "back"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "deck_id", null: false
+    t.string "slug"
+    t.string "reading"
+    t.json "meanings"
+    t.integer "jlpt"
+    t.boolean "isCommon"
+    t.json "sentences"
+    t.integer "correct"
+    t.integer "incorrect"
     t.index ["deck_id"], name: "index_cards_on_deck_id"
   end
 

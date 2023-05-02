@@ -220,7 +220,7 @@ const SearchButton = styled.button`
 const ModalDeckList = ({isOpen, onClose, onSearch ,decks}) => {
     const deckSampleCards = (cards) => {
         //return string of the first 3 cards.front
-        return cards.slice(0,3).map((card) => card.front).join(", ");
+        return cards.slice(0,3).map((card) => card.slug).join(", ");
     };
 
     const searchDeckHandler = (e) => {

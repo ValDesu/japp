@@ -15,7 +15,24 @@ import ModalEditComponent from "./components/ModalEditComponent";
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
 
+class ICard {
+  constructor(
+    slug,
+    reading,
+    meanings,
+    jlpt,
+    isCommon
+  ) {
+    this.slug = slug;
+    this.reading = reading;
+    this.meanings = meanings;
+    this.jlpt = jlpt;
+    this.isCommon = isCommon;
+  }
+}
+
 function App() {
+
   //Loading screen states
   const [loading, setLoading] = useState(false);
   const [blur, setBlur] = useState("");
@@ -115,7 +132,18 @@ function App() {
     setBlur("blur");
     axios.get(API_JISHO + (filterCommun ? 'commun/':'') + request).then((response) => {
       if (lastRequestItem.current !== request) return;
-      setCards(response.data.data);
+
+      let cards = response.data.data.map((raw_card) => {
+        return new ICard(
+          raw_card.slug,
+          raw_card.japanese[0].reading,
+          raw_card.senses[0].english_definitions,
+          (!raw_card.jlpt.length ? "" : raw_card.jlpt[0].substring(6)),
+          raw_card.is_common
+        );
+      });
+
+      setCards(cards);
       setBlur("");
     });
   };
@@ -224,18 +252,16 @@ function App() {
         onDeckList={displayModalDeckListHandler.bind(this, {'name': "", 'page': 0})}
         onEdit={setDisplayModalEdit.bind(this, true)}
       />
-      
-
-      
+            
       <div className={`card-holder ${blur} ${displayCardHolder}`} >
         {cards.map((card) => (
           <CardComponent
             key={card.slug}
             title={card.slug}
-            reading={card.japanese[0].reading}
-            description={card.senses[0].english_definitions.join(", ")}
-            pillText={card.jlpt[0] || ""}
-            isCommun={card.is_common}
+            reading={card.reading}
+            description={card.meanings.join(", ")}
+            pillText={card.jlpt || ""}
+            isCommon={card.isCommon}
             onBookmarkClick={onBookmarkClick.bind(this, card)}
             isSaved={savedCards.some((savedCard) => savedCard.slug === card.slug)}
           />

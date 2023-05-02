@@ -158,8 +158,8 @@ const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromMod
                                 return (
                                     <ModalTableRow key={index}>
                                         <ModalTableData>{child.slug}</ModalTableData>
-                                        <ModalTableData>{child.japanese[0].reading}</ModalTableData>
-                                        <ModalTableData>{child.senses[0].english_definitions.join(", ")}</ModalTableData>
+                                        <ModalTableData>{child.reading}</ModalTableData>
+                                        <ModalTableData>{child.meanings.join(", ")}</ModalTableData>
                                         <ModalTableData><ModalRemoveButton onClick={onRemoveCardFromModal} data-card-slug={child.slug}>❌</ModalRemoveButton></ModalTableData>
                                     </ModalTableRow>
                                 );

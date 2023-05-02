@@ -38,7 +38,7 @@ class Api::V1::DecksController < ApplicationController
 
     if @decks
       #render json: @decks with cards relation, only include the first 3 cards
-      render json: @decks.to_json(include: {cards: {only: [:front]}}), status: :ok
+      render json: @decks.to_json(include: {cards: {only: [:slug]}}), status: :ok
       
     else
       render json: {error: "No match for this name."}, status: :not_found
@@ -61,8 +61,15 @@ class Api::V1::DecksController < ApplicationController
         #create cards
         cards.each do |card|
           @deck.cards.create({
-            front: card[:slug],
-            back: card[:senses].first[:english_definitions].first,
+            slug: card[:slug],
+            meanings: card[:meanings],
+            reading: card[:reading],
+            jlpt: card[:jlpt],
+            isCommon: card[:isCommon],
+            sentences: {},
+            correct: 0,
+            incorrect: 0,
+
             deck_id: @deck.id
           })
         end
