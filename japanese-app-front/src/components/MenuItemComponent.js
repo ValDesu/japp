@@ -24,6 +24,12 @@ const BubbleMenuItem = styled.div`
         transform: scale(1.05);
     }
 
+    &:disabled {
+        background-color: #b3b3b3;
+        color: #fff;
+        cursor: not-allowed;
+    }
+
     //adapt to mobile
     @media (max-width: 907px) {
         width: 10rem;

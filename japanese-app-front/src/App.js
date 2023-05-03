@@ -8,9 +8,9 @@ import ModalComponent from "./components/ModalComponent";
 import LoadingScreenComponent from "./components/LoadingScreenComponent";
 import FlashMessageComponent from "./components/FlashMessageComponent";
 import MenuComponent from "./components/MenuComponent";
-import MenuItemComponent from "./components/MenuItemComponent";
 import ModalDeckList from "./components/ModalDeckList";
 import ModalEditComponent from "./components/ModalEditComponent";
+import EditNotifierComponent from "./components/EditNotifierComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
@@ -69,8 +69,14 @@ function App() {
 
   //Decks states
   const [decks, setDecks] = useState([]);
-  const [isEdeiting, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [currentDeck, setCurrentDeck] = useState({name: "", password: ""});
+
+  const onCancelEdit = () => {
+    setIsEditing(false);
+    setCurrentDeck({name: "", password: ""});
+    setSavedCards([]);
+  };
 
   //Menu states
   const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
@@ -183,6 +189,21 @@ function App() {
     setRequestQueue((queue) => [...queue, event.target.value]);
   };
 
+  const onUpdateFromModal = () => {
+    setLoading(true);
+    axios.put(API_DECKS + "update/",
+      { name: currentDeck.name, password: currentDeck.password, cards: savedCards}
+    ).then((response) => {
+      console.log(response.data);
+      displayFlashMessageHandler("Deck updated successfully !", "success");
+    }).catch((error) => {
+      console.log(error.response.data.error);
+      displayFlashMessageHandler(error.response.data.error, "error");
+    }).finally(() => {
+      setLoading(false);
+    });
+  };
+
   const onSaveFromModal = (btn) => {
     setLoading(true);
 
@@ -224,6 +245,7 @@ function App() {
       
       {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}
       {loading && <LoadingScreenComponent />}
+      {isEditing && <EditNotifierComponent deckName={currentDeck.name} onClose={onCancelEdit}/> }
 
       <ModalEditComponent
         isOpen={displayModalEdit}
@@ -244,10 +266,14 @@ function App() {
         onClose={setDisplayModalNewDeck.bind(this, false)}
         onRemoveCardFromModal={onRemoveCardFromModal}
         onSave={onSaveFromModal}
+        onUpdate={onUpdateFromModal}
+        isEditing={isEditing}
+
       />
 
       <MenuComponent 
         displayNotification={displayNotification}
+        isEditing={isEditing}
         //Menu items functions
         onCreateNewDeck={setDisplayModalNewDeck.bind(this, true)}
         onDeckList={displayModalDeckListHandler.bind(this, {'name': "", 'page': 0})}

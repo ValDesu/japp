@@ -1,5 +1,4 @@
 class Api::V1::DecksController < ApplicationController
-  before_action :set_deck, only: %i[ show update destroy ]
 
   # GET /decks
   def index
@@ -86,12 +85,41 @@ class Api::V1::DecksController < ApplicationController
 
 
 
-  # PATCH/PUT /decks/1
+  # PATCH/PUT /decks/update
   def update
-    if @deck.update(deck_params)
-      render json: @deck
+    @deck = Deck.find_by(name: params[:name], password: params[:password])
+
+    if @deck
+
+      @deck.cards.each do |card|
+        if params[:cards].include?(card)
+          #card exists in params, skip and remove from params
+          params[:cards].delete(card)
+        else
+          #card does not exist in params, delete
+          card.destroy
+        end
+      end
+      
+      params[:cards].each do |card|
+        #card does not exist in deck, create
+        @deck.cards.create({
+          slug: card[:slug],
+          meanings: card[:meanings],
+          reading: card[:reading],
+          jlpt: card[:jlpt],
+          isCommon: card[:isCommon],
+          sentences: {},
+          correct: 0,
+          incorrect: 0,
+
+          deck_id: @deck.id
+        })
+      end
+
+      render json: @deck, status: :ok
     else
-      render json: @deck.errors, status: :unprocessable_entity
+      render json: {error: "Name or Password might be wrong."}, status: :not_found
     end
   end
 

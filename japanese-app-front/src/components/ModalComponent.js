@@ -132,7 +132,7 @@ const ModalRemoveButton = styled.button`
 `;
 
 
-const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromModal }) => {
+const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromModal, isEditing, onUpdate }) => {
     const [deckName, setDeckName] = useState("");
     const [deckPassword, setDeckPassword] = useState("");
 
@@ -169,9 +169,20 @@ const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromMod
                 </ModalScrollBox>
             <WarningLabelPassword>⚠️ Password will be needed to updated this Deck. Don't use one of your usual passwords.</WarningLabelPassword>
             <ModalFooter>
-                <ModalNameInput onChange={(e)=>setDeckName(e.target.value)} type="text" placeholder="Deck name" maxLength={30}/>
-                <ModalPasswordInput onChange={(e)=>setDeckPassword(e.target.value)} type="password" placeholder="Password"/>
-                <ModalValidationButton onClick={onSave} data-deck-name={deckName} data-deck-password={deckPassword}>Save</ModalValidationButton>
+                {!isEditing && 
+                <>
+                    <ModalNameInput onChange={(e)=>setDeckName(e.target.value)} type="text" placeholder="Deck name" maxLength={30}/>
+                    <ModalPasswordInput onChange={(e)=>setDeckPassword(e.target.value)} type="password" placeholder="Password"/>
+                    <ModalValidationButton onClick={onSave} data-deck-name={deckName} data-deck-password={deckPassword}>Save</ModalValidationButton>
+                </>
+                }
+
+                {isEditing &&
+                <>
+                    <ModalValidationButton onClick={onUpdate}>Update</ModalValidationButton>
+                </>
+                }
+                
             </ModalFooter>
             </ModalContent>
             

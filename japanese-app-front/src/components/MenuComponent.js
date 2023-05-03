@@ -78,7 +78,7 @@ const BubbleText = styled.span`
 `;
 
 
-const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList}) => {
+const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList, isEditing}) => {
     const [displayItems, setDisplayItems] = useState(false);
     
     const OnClickMenuItemsAndHide = (func) => {
@@ -96,7 +96,7 @@ const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList
 
         <MenuItemComponent display={displayItems}
             btnFunction={OnClickMenuItemsAndHide.bind(this, onCreateNewDeck)}
-            text={"Create new deck"}
+            text={!isEditing ? "Create new deck" : "Update deck"}
             bottom={0}
         />
 
@@ -106,11 +106,12 @@ const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList
             bottom={1}
         />
 
+        {!isEditing &&
         <MenuItemComponent display={displayItems}
             btnFunction={OnClickMenuItemsAndHide.bind(this, onEdit)}
             text={"Edit my decks"}
             bottom={2}
-        />
+        />}
         </>
          
     );
