@@ -14,8 +14,8 @@ class Api::V1::JishoController < ApplicationController
     render json: conn.get('/api/v1/search/words').body
   end
 
-  # GET /commun/jisho
-  def getCommunWord()
+  # GET /common/jisho
+  def getCommonWord()
     word = params[:word]
     conn = Faraday.new(
       url: 'https://jisho.org',

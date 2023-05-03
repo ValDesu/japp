@@ -10,7 +10,7 @@ Rails.application.routes.draw do
       post '/decks', to: 'decks#create'
 
       get '/jisho/:word', to: 'jisho#getWord'
-      get '/jisho/commun/:word', to: 'jisho#getCommunWord'
+      get '/jisho/common/:word', to: 'jisho#getCommonWord'
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -63,7 +63,7 @@ function App() {
 
   //Search states
   const [requestQueue, setRequestQueue] = useState([]);
-  const [filterCommun, setFilterCommun] = useState(false);
+  const [filterCommon, setFilterCommon] = useState(false);
   const [displayCardHolder, setDisplayCardHolder] = useState("card-holder-hidden");
   const lastRequestItem = useRef('');
 
@@ -130,10 +130,11 @@ function App() {
 
   const handleRequest =  (request) => {
     setBlur("blur");
-    axios.get(API_JISHO + (filterCommun ? 'commun/':'') + request).then((response) => {
+    axios.get(API_JISHO + (filterCommon ? 'common/':'') + request).then((response) => {
       if (lastRequestItem.current !== request) return;
 
       let cards = response.data.data.map((raw_card) => {
+        console.log(raw_card.is_common);
         return new ICard(
           raw_card.slug,
           raw_card.japanese[0].reading,
@@ -160,7 +161,7 @@ function App() {
     if (requestQueue.length === 0) return;
 
     handleRequest(lastRequestItem.current);
-  }, [filterCommun]);
+  }, [filterCommon]);
 
   useEffect(() => {
     console.log(savedCards);
@@ -279,8 +280,8 @@ function App() {
               onChange={handleInputChange}
             />
             <div className="filter">
-              <input type={"checkbox"} onChange={() => setFilterCommun(!filterCommun)} />
-              <label>Filter commun words</label>
+              <input type={"checkbox"} onChange={() => setFilterCommon(!filterCommon)} />
+              <label>Filter common words</label>
             </div>
           </div>
         </div>

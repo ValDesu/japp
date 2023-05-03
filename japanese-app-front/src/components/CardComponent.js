@@ -8,7 +8,7 @@ const CardContainer = styled.div`
   margin:  1.3rem .8rem .8rem .3rem;
   
   border-radius: 0.5rem;
-  border: ${props => props.isCommun ? '2px solid rgb(51 230 153);' : '2px solid grey'};
+  border: ${props => props.isCommon ? '2px solid rgb(51 230 153);' : '2px solid grey'};
   min-width: 290px;
   max-width: 290px;
   max-height: 170px;
