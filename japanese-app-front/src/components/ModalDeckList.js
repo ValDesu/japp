@@ -217,7 +217,7 @@ const SearchButton = styled.button`
 
 
 
-const ModalDeckList = ({isOpen, onClose, onSearch ,decks}) => {
+const ModalDeckList = ({isOpen, onClose, onSearch ,decks, onOpenReviewSetting}) => {
     const deckSampleCards = (cards) => {
         //return string of the first 3 cards.front
         return cards.slice(0,3).map((card) => card.slug).join(", ");
@@ -256,7 +256,7 @@ const ModalDeckList = ({isOpen, onClose, onSearch ,decks}) => {
                                     <td>{deckSampleCards(deck.cards)}</td>
                                     <td>
                                         <ActionButton>💚</ActionButton>
-                                        <ActionButton>📝</ActionButton>
+                                        <ActionButton onClick={onOpenReviewSetting}>📝</ActionButton>
                                         <ActionButton>📤</ActionButton>
                                     </td>
                                 </ModalTableRow>

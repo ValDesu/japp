@@ -11,6 +11,7 @@ import MenuComponent from "./components/MenuComponent";
 import ModalDeckList from "./components/ModalDeckList";
 import ModalEditComponent from "./components/ModalEditComponent";
 import EditNotifierComponent from "./components/EditNotifierComponent";
+import ReviewFlashcardsSettingComponent from "./components/ReviewFlashcardsSettingComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
@@ -71,6 +72,7 @@ function App() {
   const [decks, setDecks] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentDeck, setCurrentDeck] = useState({name: "", password: ""});
+  const [reviewDeckID, setReviewDeckID] = useState(0);
 
   const onCancelEdit = () => {
     setIsEditing(false);
@@ -83,6 +85,9 @@ function App() {
   const [displayModalDeckList, setDisplayModalDeckList] = useState(false);
   const [displayModalEdit, setDisplayModalEdit] = useState(false);
   const [displayNotification, setDisplayNotification] = useState("none");
+
+  //Review flashcards states
+  const [displayModalReviewFlashcardsSetting, setDisplayModalReviewFlashcardsSetting] = useState(false);
 
   const displayModalDeckListHandler = ({name = "", page = 0}) => {
     setDisplayModalDeckList(true);
@@ -247,6 +252,11 @@ function App() {
       {loading && <LoadingScreenComponent />}
       {isEditing && <EditNotifierComponent deckName={currentDeck.name} onClose={onCancelEdit}/> }
 
+      <ReviewFlashcardsSettingComponent
+        isOpen={displayModalReviewFlashcardsSetting}
+        onClose={setDisplayModalReviewFlashcardsSetting.bind(this, false)}
+      />
+
       <ModalEditComponent
         isOpen={displayModalEdit}
         onClose={setDisplayModalEdit.bind(this, false)}
@@ -258,6 +268,7 @@ function App() {
         onClose={setDisplayModalDeckList.bind(this, false)}
         decks={decks}
         onSearch={displayModalDeckListHandler}
+        onOpenReviewSetting={setDisplayModalReviewFlashcardsSetting.bind(this, true)}
       />
 
       <ModalComponent 
