@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useState } from "react";
 
 const ModalContainer = styled.div`
     display: ${props => props.isOpen ? 'flex' : 'none'};
@@ -104,8 +105,20 @@ const ModalSelectAndLabelContainer = styled.div`
 `;
 
 
+const ReviewFlashcardsSettingComponent = ({isOpen, onClose, onStart}) => {
 
-const ReviewFlashcardsSettingComponent = ({isOpen, onClose}) => {
+    const handleStart = (reviewSetting) => {
+        onStart(reviewSetting);
+    }
+
+    const [reviewSetting, setReviewSetting] = useState({
+        reviewMode: 1,
+        reviewWith: 1,
+        reviewTimes: 1,
+        reviewType: 1,
+        reviewExercice: 1
+    });
+
     return (
         <ModalContainer isOpen={isOpen}>
             <ModalContent>
@@ -116,7 +129,14 @@ const ReviewFlashcardsSettingComponent = ({isOpen, onClose}) => {
 
                 <ModalSelectAndLabelContainer>
                     <ModalSelectInputLabel>I want to review</ModalSelectInputLabel>
-                    <ModalReviewModeSelectInput>
+                    <ModalReviewModeSelectInput onChange={
+                        (e) => {
+                            setReviewSetting({
+                                ...reviewSetting,
+                                reviewMode: e.target.value
+                            });
+                        }
+                    }>
                         <option value="1">Everything</option>
                         <option value="2">Lastest flashcards</option>
                         <option value="3">Difficult flashcards</option>
@@ -125,7 +145,14 @@ const ReviewFlashcardsSettingComponent = ({isOpen, onClose}) => {
 
                 <ModalSelectAndLabelContainer>
                     <ModalSelectInputLabel>With</ModalSelectInputLabel>
-                    <ModalReviewModeSelectInput>
+                    <ModalReviewModeSelectInput onChange={
+                        (e) => {
+                            setReviewSetting({
+                                ...reviewSetting,
+                                reviewWith: e.target.value
+                            });
+                        }
+                    }>
                         <option value="1">All flashcards</option>
                         <option value="2">20 flashcards</option>
                         <option value="3">40 flashcards</option>
@@ -134,7 +161,14 @@ const ReviewFlashcardsSettingComponent = ({isOpen, onClose}) => {
 
                 <ModalSelectAndLabelContainer>
                     <ModalSelectInputLabel>Until I get it right</ModalSelectInputLabel>
-                    <ModalReviewModeSelectInput>
+                    <ModalReviewModeSelectInput onChange={
+                        (e) => {
+                            setReviewSetting({
+                                ...reviewSetting,
+                                reviewTimes: e.target.value
+                            });
+                        }
+                    }>
                         <option value="1">Review 1 time</option>
                         <option value="2">Review 2 times</option>
                         <option value="3">Review 3 times</option>
@@ -143,7 +177,14 @@ const ReviewFlashcardsSettingComponent = ({isOpen, onClose}) => {
 
                 <ModalSelectAndLabelContainer>
                     <ModalSelectInputLabel>I want to see</ModalSelectInputLabel>
-                    <ModalReviewModeSelectInput>
+                    <ModalReviewModeSelectInput onChange={
+                        (e) => {
+                            setReviewSetting({
+                                ...reviewSetting,
+                                reviewType: e.target.value
+                            });
+                        }
+                    }>
                         <option value="1">English and Japanese</option>
                         <option value="2">English to Japanese</option>
                         <option value="3">Japanese to English</option>
@@ -152,14 +193,21 @@ const ReviewFlashcardsSettingComponent = ({isOpen, onClose}) => {
 
                 <ModalSelectAndLabelContainer>
                     <ModalSelectInputLabel>I want to use</ModalSelectInputLabel>
-                    <ModalReviewModeSelectInput>
+                    <ModalReviewModeSelectInput onChange={
+                        (e) => {
+                            setReviewSetting({
+                                ...reviewSetting,
+                                reviewExercice: e.target.value
+                            });
+                        }
+                    }>
                         <option value="1">Just flashcards</option>
                         <option value="2">Flashcards and typing</option>
                         <option value="3">AI output exercices</option>
                     </ModalReviewModeSelectInput>
                 </ModalSelectAndLabelContainer>
 
-                <ModalStartButton>Start</ModalStartButton>
+                <ModalStartButton onClick={handleStart.bind(this, reviewSetting)}>Start</ModalStartButton>
                 
             </ModalContent>
         </ModalContainer>

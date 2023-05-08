@@ -32,6 +32,22 @@ class ICard {
   }
 }
 
+class IReviewSetting {
+  constructor(
+    reviewMode,
+    reviewWith,
+    reviewTimes,
+    reviewType,
+    reviewExercice
+  ) {
+    this.reviewMode = reviewMode;
+    this.reviewWith = reviewWith;
+    this.reviewTimes = reviewTimes;
+    this.reviewType = reviewType;
+    this.reviewExercice = reviewExercice;
+  }
+}
+
 function App() {
 
   //Loading screen states
@@ -73,12 +89,25 @@ function App() {
   const [isEditing, setIsEditing] = useState(false);
   const [currentDeck, setCurrentDeck] = useState({name: "", password: ""});
   const [reviewDeckID, setReviewDeckID] = useState(0);
+  const [reviewSetting, setReviewSetting] = useState(new IReviewSetting());
 
   const onCancelEdit = () => {
     setIsEditing(false);
     setCurrentDeck({name: "", password: ""});
     setSavedCards([]);
   };
+
+  const flashcardsSettingHandler = (btn) => {
+    setDisplayModalReviewFlashcardsSetting(true);
+    setReviewDeckID(btn.target.getAttribute("data-deck-id"));
+  };
+
+  const onStartReview = (reviewSetting) => {
+    setLoading(true);
+    setReviewSetting(reviewSetting);
+    console.log(reviewSetting);
+  }
+
 
   //Menu states
   const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
@@ -255,6 +284,7 @@ function App() {
       <ReviewFlashcardsSettingComponent
         isOpen={displayModalReviewFlashcardsSetting}
         onClose={setDisplayModalReviewFlashcardsSetting.bind(this, false)}
+        onStart={onStartReview}
       />
 
       <ModalEditComponent
@@ -268,7 +298,7 @@ function App() {
         onClose={setDisplayModalDeckList.bind(this, false)}
         decks={decks}
         onSearch={displayModalDeckListHandler}
-        onOpenReviewSetting={setDisplayModalReviewFlashcardsSetting.bind(this, true)}
+        onOpenReviewSetting={flashcardsSettingHandler}
       />
 
       <ModalComponent 

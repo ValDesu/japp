@@ -256,7 +256,7 @@ const ModalDeckList = ({isOpen, onClose, onSearch ,decks, onOpenReviewSetting}) 
                                     <td>{deckSampleCards(deck.cards)}</td>
                                     <td>
                                         <ActionButton>💚</ActionButton>
-                                        <ActionButton onClick={onOpenReviewSetting}>📝</ActionButton>
+                                        <ActionButton data-deck-id={deck.id} onClick={onOpenReviewSetting}>📝</ActionButton>
                                         <ActionButton>📤</ActionButton>
                                     </td>
                                 </ModalTableRow>
