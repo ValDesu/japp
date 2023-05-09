@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :cards
       #resources :decks
+      post '/decks/review', to: 'decks#review'
       put '/decks/update', to: 'decks#update'
       get '/decks/edit', to: 'decks#edit'
       get '/decks/search', to: 'decks#search'

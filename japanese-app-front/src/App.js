@@ -100,12 +100,25 @@ function App() {
   const flashcardsSettingHandler = (btn) => {
     setDisplayModalReviewFlashcardsSetting(true);
     setReviewDeckID(btn.target.getAttribute("data-deck-id"));
+    console.log(btn.target.getAttribute("data-deck-id"));
   };
 
   const onStartReview = (reviewSetting) => {
     setLoading(true);
     setReviewSetting(reviewSetting);
-    console.log(reviewSetting);
+
+    axios.post(API_DECKS + "review/", {'deck_id': reviewDeckID, 'review_setting': reviewSetting} ).then((response) => {
+      console.log(response.data);
+
+      setDisplayModalDeckList(false);
+      setDisplayModalReviewFlashcardsSetting(false);
+    }).catch((error) => {
+      console.log(error.response.data.error);
+      displayFlashMessageHandler(error.response.data.error, "error");
+    }).finally(() => {
+      setLoading(false);
+    });
+    
   }
 
 

@@ -7,6 +7,50 @@ class Api::V1::DecksController < ApplicationController
     render json: @decks
   end
 
+  #POST /decks/review
+  def review
+    @deck = Deck.find(params[:deck_id].to_i)
+
+    if !@deck
+      render json: {error: "Deck not found."}, status: :not_found
+    end
+
+    @cards = @deck.cards
+    @cards = @cards.shuffle
+
+    #switch review mode
+    case params[:review_setting][:reviewMode]
+      when '1'
+        #review all cards
+      when '2'
+        #review recently added cards
+        @cards = @deck.cards.where("created_at > ?", 1.week.ago)
+      when '3'
+        #review cards with low accuracy
+        @cards = @deck.cards.where("correct < incorrect")
+    end
+
+    #switch review with number of cards
+    case params[:review_setting][:reviewWith]
+      when '1'
+        #review with all cards
+      when '2'
+        #review with 20 cards
+        @cards = @cards.limit(20)
+      when '3'
+        #review with 40 cards
+        @cards = @cards.limit(40)
+    end
+
+
+    if @cards
+      render json: @cards, status: :ok
+    else
+      render json: {error: "No cards found."}, status: :not_found
+    end
+
+  end
+
   #GET /decks/edit
   def edit
     if params[:name] && params[:password]
