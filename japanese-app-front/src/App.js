@@ -12,6 +12,7 @@ import ModalDeckList from "./components/ModalDeckList";
 import ModalEditComponent from "./components/ModalEditComponent";
 import EditNotifierComponent from "./components/EditNotifierComponent";
 import ReviewFlashcardsSettingComponent from "./components/ReviewFlashcardsSettingComponent";
+import ReviewModalComponent from "./components/ReviewModalComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
@@ -90,6 +91,7 @@ function App() {
   const [currentDeck, setCurrentDeck] = useState({name: "", password: ""});
   const [reviewDeckID, setReviewDeckID] = useState(0);
   const [reviewSetting, setReviewSetting] = useState(new IReviewSetting());
+  const [isReviewing, setIsReviewing] = useState(false);
 
   const onCancelEdit = () => {
     setIsEditing(false);
@@ -112,6 +114,7 @@ function App() {
 
       setDisplayModalDeckList(false);
       setDisplayModalReviewFlashcardsSetting(false);
+      setIsReviewing(true);
     }).catch((error) => {
       console.log(error.response.data.error);
       displayFlashMessageHandler(error.response.data.error, "error");
@@ -293,6 +296,8 @@ function App() {
       {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}
       {loading && <LoadingScreenComponent />}
       {isEditing && <EditNotifierComponent deckName={currentDeck.name} onClose={onCancelEdit}/> }
+      {isReviewing && <ReviewModalComponent/>}
+      
 
       <ReviewFlashcardsSettingComponent
         isOpen={displayModalReviewFlashcardsSetting}
