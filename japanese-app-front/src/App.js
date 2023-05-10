@@ -92,6 +92,7 @@ function App() {
   const [reviewDeckID, setReviewDeckID] = useState(0);
   const [reviewSetting, setReviewSetting] = useState(new IReviewSetting());
   const [isReviewing, setIsReviewing] = useState(false);
+  const [reviewCards, setReviewCards] = useState([]);
 
   const onCancelEdit = () => {
     setIsEditing(false);
@@ -112,6 +113,7 @@ function App() {
     axios.post(API_DECKS + "review/", {'deck_id': reviewDeckID, 'review_setting': reviewSetting} ).then((response) => {
       console.log(response.data);
 
+      setReviewCards(response.data);
       setDisplayModalDeckList(false);
       setDisplayModalReviewFlashcardsSetting(false);
       setIsReviewing(true);
@@ -296,7 +298,7 @@ function App() {
       {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}
       {loading && <LoadingScreenComponent />}
       {isEditing && <EditNotifierComponent deckName={currentDeck.name} onClose={onCancelEdit}/> }
-      {isReviewing && <ReviewModalComponent/>}
+      {isReviewing && <ReviewModalComponent reviewSetting={reviewSetting} cards={reviewCards}/>}
       
 
       <ReviewFlashcardsSettingComponent
