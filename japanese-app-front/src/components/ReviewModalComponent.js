@@ -138,6 +138,29 @@ const FlashCardResponseText = styled.h1`
     }
 `;
 
+const ProgressBar = styled.div`
+    position: relative;
+    width: 70%;
+    height: 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    opacity: 1;
+    border-radius: 0.5rem;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+`;
+
+const Progress = styled.div`
+    width: ${props => props.progress}%;
+    height: 100%;
+    background-color: ${props => props.status === "correct" ? 'rgb(51, 230, 153)' : "yellow"};
+    border-radius: 0.5rem;
+
+    transition: width 0.5s ease-in-out;
+`;
+
+
+
 class ICardReview {
     constructor(card, reviewedTimes, side, isCorrect) {
         this.card = card;
@@ -175,6 +198,9 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
 
     const [toReviewCards, setToReviewCards] = useState([]);
     const [reviewedCards, setReviewedCards] = useState([]);
+    const [statusCardProgress, setStatusCardProgress] = useState('correct');
+
+
     
     useEffect(() => {
         let intervalId;
@@ -185,26 +211,24 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
     const minute = Math.floor((timeClock % 360000) / 6000);
     const second = Math.floor((timeClock % 6000) / 100);
 
-    useEffect(() => {   
+    useEffect(() => {
         if (isInitialMount.current) {
-            isInitialMount.current = false;
+          isInitialMount.current = false;
         } else {
-            let id = 0;
-            cards.forEach(element => {
-                let cardReview_slug = new ICardReview(element, 0, 'slug', true);
-                let cardReview_meaning  = new ICardReview(element, 0, 'meaning', true);
-                setToReviewCards(toReviewCards => [...toReviewCards, cardReview_slug, cardReview_meaning]);
-                id++;
-            });
-
-            setToReviewCards(toReviewCards => toReviewCards.sort(() => Math.random() - 0.5));
-            setSetupFinished(true);
+          const updatedToReviewCards = cards.map((element) => {
+            const cardReviewSlug = new ICardReview(element, 0, 'slug', true);
+            const cardReviewMeaning = new ICardReview(element, 0, 'meaning', true);
+            return [cardReviewSlug, cardReviewMeaning];
+          }).flat();
+          setToReviewCards(updatedToReviewCards.sort(() => Math.random() - 0.5));
+          setSetupFinished(true);
         }
-    }, []);
+      }, [cards]);
 
     const handleShowAnswer = () => {
         setIsQuestion(false);
     };
+
 
     const handleValidateAnswer = ({result}) => {
         const c_card = toReviewCards[currentCardIndex];
@@ -215,8 +239,8 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
                 const updatedCard = {...c_card, reviewedTimes: c_card.reviewedTimes + 1};
                 updatedCards[currentCardIndex] = updatedCard;
             }else{
-                const updatedCard = {...c_card, isCorrect: true};
-                updatedCards[currentCardIndex] = updatedCard;
+                updatedCards.splice(currentCardIndex, 1);
+                setReviewedCards(reviewedCards => [...reviewedCards, c_card.card]);
             }
         }
 
@@ -226,23 +250,30 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
         }
 
         setToReviewCards(updatedCards);
-        
+        setCurrentCardIndex(0);
         setIsQuestion(true);
         
         if(currentCardIndex < toReviewCards.length - 1){
             setCurrentCardIndex((v) => v+1);
-        }else{
-            console.log(toReviewCards);
-            setCurrentCardIndex(0);
-            //put correct reviewed cards in the reviewedCards state and remove them from toReviewCards state
-            let correctReviewedCards = toReviewCards.filter((card) => card.isCorrect === true);
-            setReviewedCards(reviewedCards => [...reviewedCards, ...correctReviewedCards]);
-            setToReviewCards(toReviewCards => toReviewCards.filter((card) => card.isCorrect === false));
-            
-            
         }
-
+        else{
+            console.log('finished');
+            setSetupFinished(false);
+        }
     };
+
+    //useEffect on current card to update progress bar color
+    useEffect(() => {
+        if(toReviewCards.length > 0){
+            const c_card = toReviewCards[currentCardIndex];
+            if(c_card.isCorrect){
+                setStatusCardProgress('correct');
+            }else{
+                setStatusCardProgress('wrong');
+            }
+        }
+    }, [currentCardIndex, toReviewCards]);
+
 
 
     return (
@@ -252,6 +283,9 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
             </TransparentClockTimer>
             <ModalContentBorder>
                 <ModalContent>
+                    <ProgressBar>
+                        <Progress status={statusCardProgress} progress={((reviewedCards.length + 1) / (reviewedCards.length + toReviewCards.length)) * 100}/>
+                    </ProgressBar>
                     {setupFinished ? 
                     <>
                     

@@ -107,6 +107,7 @@ function App() {
   };
 
   const onStartReview = (reviewSetting) => {
+    setDisplayCardHolder("card-holder-hidden");
     setLoading(true);
     setReviewSetting(reviewSetting);
 
