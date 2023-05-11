@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import { useEffect, useState, useRef} from "react";
+import Confetti from 'react-confetti';
 
 const SpinAnimation = keyframes`
     0% {
@@ -156,7 +157,7 @@ const Progress = styled.div`
     background-color: ${props => props.status === "correct" ? 'rgb(51, 230, 153)' : "yellow"};
     border-radius: 0.5rem;
 
-    transition: width 0.5s ease-in-out;
+    transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
 `;
 
 
@@ -189,6 +190,7 @@ class ICardReview {
 const ReviewModalComponent = ({reviewSetting, cards}) => {
 
     const [setupFinished, setSetupFinished] = useState(false);
+    const [isReviewFinished, setIsReviewFinished] = useState(false);
     const isInitialMount = useRef(true);
 
     const [timeClock, setTimeClock] = useState(0);
@@ -231,6 +233,13 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
 
 
     const handleValidateAnswer = ({result}) => {
+
+        if(toReviewCards.length == 1 && (toReviewCards[0].reviewedTimes == reviewSetting.reviewTimes || toReviewCards[0].isCorrect)){
+            console.log('finished');
+            setIsReviewFinished(true);
+            setStatusCardProgress('correct');
+        }
+
         const c_card = toReviewCards[currentCardIndex];
         const updatedCards = [...toReviewCards];
 
@@ -238,6 +247,8 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
             if(c_card.isCorrect === false && c_card.reviewedTimes < reviewSetting.reviewTimes){
                 const updatedCard = {...c_card, reviewedTimes: c_card.reviewedTimes + 1};
                 updatedCards[currentCardIndex] = updatedCard;
+                //shuffle the cards to review
+                updatedCards.sort(() => Math.random() - 0.5);
             }else{
                 updatedCards.splice(currentCardIndex, 1);
                 setReviewedCards(reviewedCards => [...reviewedCards, c_card.card]);
@@ -247,23 +258,17 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
         if(result === 'wrong'){
             const updatedCard = {...c_card, isCorrect: false};
             updatedCards[currentCardIndex] = updatedCard;
+            //shuffle the cards to review
+            updatedCards.sort(() => Math.random() - 0.5);
         }
 
         setToReviewCards(updatedCards);
-        setCurrentCardIndex(0);
         setIsQuestion(true);
-        
-        if(currentCardIndex < toReviewCards.length - 1){
-            setCurrentCardIndex((v) => v+1);
-        }
-        else{
-            console.log('finished');
-            setSetupFinished(false);
-        }
     };
 
     //useEffect on current card to update progress bar color
     useEffect(() => {
+        console.log('length: ', toReviewCards.length, 'currentCardIndex: ', currentCardIndex, 'toReviewCards: ', toReviewCards);
         if(toReviewCards.length > 0){
             const c_card = toReviewCards[currentCardIndex];
             if(c_card.isCorrect){
@@ -283,10 +288,19 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
             </TransparentClockTimer>
             <ModalContentBorder>
                 <ModalContent>
+
+                    {isReviewFinished ? 
+                        <Confetti
+                        recycle={false}
+                        gravity={0.2}
+                        />
+                        : null
+                    }
+                    
                     <ProgressBar>
-                        <Progress status={statusCardProgress} progress={((reviewedCards.length + 1) / (reviewedCards.length + toReviewCards.length)) * 100}/>
+                        <Progress status={statusCardProgress} progress={((reviewedCards.length) / (reviewedCards.length + toReviewCards.length)) * 100}/>
                     </ProgressBar>
-                    {setupFinished ? 
+                    {setupFinished && !isReviewFinished ? 
                     <>
                     
                     <FlashCardContent>
@@ -310,6 +324,8 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
 
                             :null
                         }
+
+                        
                     </FlashCardContent>
                     <ModalFooterButtonsHolder>
                         {isQuestion ? 
