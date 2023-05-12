@@ -86,6 +86,10 @@ const ModalContent = styled.div`
     width: 100%;
     height: 100%;
 
+    :focus {
+        outline: none;
+    }
+
 `;
 
 const ModalFooterButtonsHolder = styled.div`
@@ -95,11 +99,15 @@ const ModalFooterButtonsHolder = styled.div`
 `;
 
 const FlashCardButton = styled.button`
-    background-color: #fff;
-    color: #000;
+    background-color: ${props => props.color};
+    color: white;
     border: none;
     border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
+    padding: 0.3rem 1rem;
+    margin-left : 1rem;
+    margin-right : 1rem;
+
+    font-size: 1rem;
 
     &:hover {
         cursor: pointer;
@@ -159,6 +167,15 @@ const Progress = styled.div`
 
     transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
 `;
+
+const ReviewFinalScore = styled.p`
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    margin-top: 1rem;
+`;
+
+
 
 
 
@@ -287,7 +304,20 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
                 <span>{minute.toString().padStart(2, "0")} : {second.toString().padStart(2, "0")}</span>
             </TransparentClockTimer>
             <ModalContentBorder>
-                <ModalContent>
+                <ModalContent
+                tabIndex={0} onKeyDown={(e) => {
+                    if(isReviewFinished || !setupFinished) return;
+                    
+                    if(e.key === 'ArrowRight' && !isQuestion){
+                        handleValidateAnswer({result: 'wrong'});
+                    }
+                    if(e.key === 'ArrowLeft' && !isQuestion){
+                        handleValidateAnswer({result: 'correct'});
+                    }
+                    if(e.key === 'ArrowUp' && isQuestion){
+                        handleShowAnswer();
+                    }
+                }}>
 
                     {isReviewFinished ? 
                         <Confetti
@@ -300,6 +330,7 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
                     <ProgressBar>
                         <Progress status={statusCardProgress} progress={((reviewedCards.length) / (reviewedCards.length + toReviewCards.length)) * 100}/>
                     </ProgressBar>
+
                     {setupFinished && !isReviewFinished ? 
                     <>
                     
@@ -324,16 +355,14 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
 
                             :null
                         }
-
-                        
                     </FlashCardContent>
                     <ModalFooterButtonsHolder>
                         {isQuestion ? 
-                        <FlashCardButton onClick={handleShowAnswer}>SHOW</FlashCardButton>
+                        <FlashCardButton color={'rgb(17 42 52)'} onClick={handleShowAnswer}>🔄</FlashCardButton>
                         :
                         <>
-                        <FlashCardButton onClick={handleValidateAnswer.bind(this, {result: 'correct'})}>CORRECT</FlashCardButton>
-                        <FlashCardButton onClick={handleValidateAnswer.bind(this, {result: 'wrong'})}>WRONG</FlashCardButton>
+                        <FlashCardButton color={'rgb(55 50 80)'} onClick={handleValidateAnswer.bind(this, {result: 'correct'})}>✔️</FlashCardButton>
+                        <FlashCardButton color={'rgb(78 35 35)'} onClick={handleValidateAnswer.bind(this, {result: 'wrong'})}>❌</FlashCardButton>
                         </>
                         }
                         
