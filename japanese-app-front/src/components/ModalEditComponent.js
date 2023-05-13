@@ -19,7 +19,7 @@ const ModalContent = styled.div`
     background-color: #fff;
     padding: 1rem;
     border-radius: 0.5rem;
-    width: 40%;
+    width: 30%;
     height: 25%;
 
     //adapt to mobile

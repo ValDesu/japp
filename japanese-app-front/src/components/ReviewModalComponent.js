@@ -53,6 +53,16 @@ const TransparentClockTimer = styled.div`
     @media (max-width: 907px) {
         height: 5rem;
         font-size: 5rem;
+        top: 1.3rem;
+        
+        color: #fff;
+        opacity: 0.2;
+    }
+
+    @media (max-height: 700px) {
+        fheight: 5rem;
+        font-size: 5rem;
+        top: 1.3rem;
         
         color: #fff;
         opacity: 0.2;
@@ -69,7 +79,7 @@ const ModalContentBorder = styled.div`
     border-radius: 0.5rem;
     animation: ${SpinAnimation} 10s ease infinite ;
 
-    width: 70%;
+    width: 50%;
     height: 50%;
 
     //adapt to mobile
@@ -77,6 +87,11 @@ const ModalContentBorder = styled.div`
         width: 100%;
         height: 100%;
         border-radius: 0;
+    }
+
+    @media (max-height: 700px) {
+        width: 100%;
+        height: 100%;
     }
 `;
 
@@ -96,6 +111,11 @@ const ModalFooterButtonsHolder = styled.div`
     display: flex;
     justify-content: center;
 
+    //adapt to mobile
+    @media (max-width: 907px) {
+        align-items: center;
+    }
+
 `;
 
 const FlashCardButton = styled.button`
@@ -112,6 +132,13 @@ const FlashCardButton = styled.button`
     &:hover {
         cursor: pointer;
     }
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        font-size: 2rem;
+        margin-left : 2rem;
+        margin-right : 2rem;
+    }
 `;
 
 const FlashCardContent = styled.div`
@@ -121,17 +148,23 @@ const FlashCardContent = styled.div`
     align-items: center;
 
     height: 80%;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        height: 70%;
+    }
 `;
 
 const FlashCardQuestionText = styled.h1`
     font-size: 4cqw;
     font-weight: bold;
     font-family: 'Orbitron', sans-serif;
+    text-align: center;
     color: #fff;
 
     //adapt to mobile
     @media (max-width: 907px) {
-        font-size: 8cqw;
+        font-size: 12cqw;
     }
 `;
 
@@ -139,13 +172,33 @@ const FlashCardResponseText = styled.h1`
     font-size: 3.3cqw;
     font-weight: 100;
     font-family: 'Orbitron', sans-serif;
+    text-align  : center;
     color: #fff;
 
     //adapt to mobile
     @media (max-width: 907px) {
-        font-size: 8cqw;
+        font-size: 9.5cqw;
     }
 `;
+
+const FuriganaText = styled.span`
+    font-size: 1.5cqw;
+    font-weight: 100;
+    color: ${(props) => props.display ? "#fff" : "transparent"};
+
+    border-radius: 0.5rem;
+    padding: 0.3rem 1rem;
+    background-color: #2b2e31;
+
+    transition: color 0.3s ease-in-out;
+    cursor: pointer;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        font-size: 4cqw;
+    }
+`;
+
 
 const ProgressBar = styled.div`
     position: relative;
@@ -168,13 +221,58 @@ const Progress = styled.div`
     transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
 `;
 
-const ReviewFinalScore = styled.p`
-    font-size: 2rem;
-    font-weight: bold;
-    color: #fff;
-    margin-top: 1rem;
+const FinalScoreContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 80%;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        height: 100%;
+    }
 `;
 
+const FinalScoreText = styled.h1`
+    font-size: 2cqw;
+    font-weight: bold;
+    color: #fff;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        font-size: 5cqw;
+    }
+
+    @media (max-width: 500px) {
+        font-size: 8cqw;
+    }
+`;
+
+const FinalScoreValue = styled.p`
+    font-size: 1.5cqw;
+    font-weight: 10;
+    color: #fff;
+    text-align: center;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        font-size: 4cqw;
+    }
+
+    @media (max-width: 500px) {
+        font-size: 6cqw;
+    }
+`;
+
+const SeparatorLine = styled.div`
+    width: 80%;
+    height: 0.1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+`;
 
 
 
@@ -204,28 +302,32 @@ class ICardReview {
  * - The exercise is finished when all cards are reviewed correctly and the reviewSetting.reviewTimes is reached for all cards.
  * 
  */
-const ReviewModalComponent = ({reviewSetting, cards}) => {
+const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) => {
 
     const [setupFinished, setSetupFinished] = useState(false);
     const [isReviewFinished, setIsReviewFinished] = useState(false);
     const isInitialMount = useRef(true);
+    const flashCardContentRef = useRef(null);
 
     const [timeClock, setTimeClock] = useState(0);
     const [isQuestion, setIsQuestion] = useState(true);
 
-    const [currentCardIndex, setCurrentCardIndex] = useState(0);
-
     const [toReviewCards, setToReviewCards] = useState([]);
     const [reviewedCards, setReviewedCards] = useState([]);
     const [statusCardProgress, setStatusCardProgress] = useState('correct');
+    const [displayFurigana, setDisplayFurigana] = useState(false);
 
+    const handleOnCloseFinished = () => {
+        onCloseFinished(reviewedCards);
+    };
 
     
     useEffect(() => {
+        if (isReviewFinished) return;
         let intervalId;
         intervalId = setInterval(() => setTimeClock(timeClock + 1), 10);
         return () => clearInterval(intervalId);
-    }, [timeClock]);
+    }, [timeClock, isReviewFinished]);
 
     const minute = Math.floor((timeClock % 360000) / 6000);
     const second = Math.floor((timeClock % 6000) / 100);
@@ -250,6 +352,7 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
 
 
     const handleValidateAnswer = ({result}) => {
+        setDisplayFurigana(false);
 
         if(toReviewCards.length == 1 && (toReviewCards[0].reviewedTimes == reviewSetting.reviewTimes || toReviewCards[0].isCorrect)){
             console.log('finished');
@@ -257,24 +360,24 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
             setStatusCardProgress('correct');
         }
 
-        const c_card = toReviewCards[currentCardIndex];
+        const c_card = toReviewCards[0];
         const updatedCards = [...toReviewCards];
 
         if(result === 'correct'){
             if(c_card.isCorrect === false && c_card.reviewedTimes < reviewSetting.reviewTimes){
                 const updatedCard = {...c_card, reviewedTimes: c_card.reviewedTimes + 1};
-                updatedCards[currentCardIndex] = updatedCard;
+                updatedCards[0] = updatedCard;
                 //shuffle the cards to review
                 updatedCards.sort(() => Math.random() - 0.5);
             }else{
-                updatedCards.splice(currentCardIndex, 1);
-                setReviewedCards(reviewedCards => [...reviewedCards, c_card.card]);
+                updatedCards.splice(0, 1);
+                setReviewedCards(reviewedCards => [...reviewedCards, c_card]);
             }
         }
 
         if(result === 'wrong'){
             const updatedCard = {...c_card, isCorrect: false};
-            updatedCards[currentCardIndex] = updatedCard;
+            updatedCards[0] = updatedCard;
             //shuffle the cards to review
             updatedCards.sort(() => Math.random() - 0.5);
         }
@@ -285,16 +388,19 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
 
     //useEffect on current card to update progress bar color
     useEffect(() => {
-        console.log('length: ', toReviewCards.length, 'currentCardIndex: ', currentCardIndex, 'toReviewCards: ', toReviewCards);
         if(toReviewCards.length > 0){
-            const c_card = toReviewCards[currentCardIndex];
+            const c_card = toReviewCards[0];
             if(c_card.isCorrect){
                 setStatusCardProgress('correct');
             }else{
                 setStatusCardProgress('wrong');
             }
         }
-    }, [currentCardIndex, toReviewCards]);
+    }, [toReviewCards]);
+
+    useEffect(() => {
+        flashCardContentRef.current.focus();
+    }, [isQuestion]);
 
 
 
@@ -304,7 +410,7 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
                 <span>{minute.toString().padStart(2, "0")} : {second.toString().padStart(2, "0")}</span>
             </TransparentClockTimer>
             <ModalContentBorder>
-                <ModalContent
+                <ModalContent ref={flashCardContentRef} 
                 tabIndex={0} onKeyDown={(e) => {
                     if(isReviewFinished || !setupFinished) return;
                     
@@ -337,21 +443,36 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
                     <FlashCardContent>
                         <FlashCardQuestionText>
                             {
-                            toReviewCards[currentCardIndex].side === 'slug' ?
-                            toReviewCards[currentCardIndex].card.slug :
-                            toReviewCards[currentCardIndex].card.meanings.join(', ')
+                            toReviewCards[0].side === 'slug' ?
+                            toReviewCards[0].card.slug :
+                            toReviewCards[0].card.meanings.join(', ')
                             }
                         </FlashCardQuestionText>
                         {
+                            toReviewCards[0].side === 'slug' ?
+                            <FuriganaText display={displayFurigana} onClick={setDisplayFurigana.bind(this, true)}>
+                                {toReviewCards[0].card.reading}
+                            </FuriganaText>
+                            : null
+                        }
+                        {
                             !isQuestion ?
-
+                            <>
                             <FlashCardResponseText>
                                 {
-                                    toReviewCards[currentCardIndex].side === 'meaning' ?
-                                    toReviewCards[currentCardIndex].card.slug :
-                                    toReviewCards[currentCardIndex].card.meanings.join(', ')
+                                    toReviewCards[0].side === 'meaning' ?
+                                    toReviewCards[0].card.slug :
+                                    toReviewCards[0].card.meanings.join(', ')
                                 }
                             </FlashCardResponseText>
+                            {
+                                toReviewCards[0].side === 'meaning' ?
+                                <FuriganaText display={true}>
+                                    {toReviewCards[0].card.reading}
+                                </FuriganaText>
+                                : null
+                            }
+                            </>
 
                             :null
                         }
@@ -365,10 +486,42 @@ const ReviewModalComponent = ({reviewSetting, cards}) => {
                         <FlashCardButton color={'rgb(78 35 35)'} onClick={handleValidateAnswer.bind(this, {result: 'wrong'})}>❌</FlashCardButton>
                         </>
                         }
-                        
                     </ModalFooterButtonsHolder>
                     </>
                     : null}
+                    {isReviewFinished ?
+                        <FinalScoreContent>
+                            <FinalScoreText>
+                                Congratulations 🎏
+                            </FinalScoreText>
+                            <FinalScoreValue>
+                                You have finished reviewing all the cards in {minute.toString().padStart(2, "0")} : {second.toString().padStart(2, "0")}
+                            </FinalScoreValue>
+                            <FinalScoreValue>
+                                You have reviewed {reviewedCards.length} cards ({reviewedCards.length*2} questions)
+                            </FinalScoreValue>
+                            <FinalScoreValue>
+                                {reviewedCards.filter(card => card.isCorrect).length} correct answers and {reviewedCards.filter(card => !card.isCorrect).length} wrong answers
+                            </FinalScoreValue>
+                            {reviewedCards.filter(card => !card.isCorrect).length > 0 ?
+                            <FinalScoreValue>
+                                You should review these cards : {reviewedCards.filter(card => !card.isCorrect).map((r_card) => {
+                                    if(r_card.side === 'slug'){
+                                        return r_card.card.slug;
+                                    }else{
+                                        return r_card.card.meanings[0];
+                                    }
+                                }).join(', ')}
+                             </FinalScoreValue>
+                            :
+                            <FinalScoreValue>
+                                You have reviewed all the cards correctly, good job !
+                            </FinalScoreValue>}
+                            <SeparatorLine/>
+                            <FlashCardButton color={'rgb(55 50 80)'} onClick={handleOnCloseFinished}>✔️</FlashCardButton>
+                        </FinalScoreContent>
+                    :null
+                    }
                 </ModalContent>
             </ModalContentBorder>
         </ModalContainer>

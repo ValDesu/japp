@@ -127,6 +127,21 @@ function App() {
     
   }
 
+  const saveReview = ({reviewedCards}) => {
+    console.log(reviewedCards);
+    setLoading(true);
+    axios.post(API_DECKS + "review/save/", {'deck_id': reviewDeckID, 'reviewed_cards': reviewedCards} ).then((response) => {
+      console.log(response.data);
+      displayFlashMessageHandler("Review saved successfully !", "success");
+    }).catch((error) => {
+      console.log(error.response.data.error);
+      displayFlashMessageHandler(error.response.data.error, "error");
+    }).finally(() => {
+      setLoading(false);
+      setIsReviewing(false);
+    });
+  };
+
 
   //Menu states
   const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
@@ -299,7 +314,11 @@ function App() {
       {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}
       {loading && <LoadingScreenComponent />}
       {isEditing && <EditNotifierComponent deckName={currentDeck.name} onClose={onCancelEdit}/> }
-      {isReviewing && <ReviewModalComponent reviewSetting={reviewSetting} cards={reviewCards}/>}
+      {isReviewing && <ReviewModalComponent
+        onCloseFinished={saveReview}
+        reviewSetting={reviewSetting} 
+        cards={reviewCards}
+      />}
       
 
       <ReviewFlashcardsSettingComponent

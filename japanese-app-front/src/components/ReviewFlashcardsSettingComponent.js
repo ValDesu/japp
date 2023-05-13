@@ -23,7 +23,7 @@ const ModalContent = styled.div`
     background-color: #fff;
     padding: 1rem;
     border-radius: 0.5rem;
-    width: 50%;
+    width: 40%;
     //height: 50%;
     //soft drop shadow
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
