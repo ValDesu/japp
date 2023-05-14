@@ -7,6 +7,36 @@ class Api::V1::DecksController < ApplicationController
     render json: @decks
   end
 
+  #POST /decks/review/update
+  def updateReview
+    begin
+      @deck = Deck.find(params[:deck_id].to_i)
+    rescue
+      render json: {error: "Deck not found."}, status: :not_found
+    end
+
+    @deck.done += 1
+    @deck.save
+
+    params[:reviewed_cards].each do |r_card|
+      begin
+        @card = Card.find(r_card[:card][:id].to_i)
+      rescue
+        #skip card if not found
+        next
+      end
+      
+      if r_card[:isCorrect]
+        @card.correct += 1
+      else
+        @card.incorrect += 1
+      end
+
+      @card.save
+    end
+
+  end
+
   #POST /decks/review
   def review
     @deck = Deck.find(params[:deck_id].to_i)

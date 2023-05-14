@@ -318,7 +318,7 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
     const [displayFurigana, setDisplayFurigana] = useState(false);
 
     const handleOnCloseFinished = () => {
-        onCloseFinished(reviewedCards);
+        onCloseFinished({reviewedCards: reviewedCards});
     };
 
     

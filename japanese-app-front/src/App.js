@@ -130,7 +130,7 @@ function App() {
   const saveReview = ({reviewedCards}) => {
     console.log(reviewedCards);
     setLoading(true);
-    axios.post(API_DECKS + "review/save/", {'deck_id': reviewDeckID, 'reviewed_cards': reviewedCards} ).then((response) => {
+    axios.post(API_DECKS + "review/update/", {'deck_id': reviewDeckID, 'reviewed_cards': reviewedCards} ).then((response) => {
       console.log(response.data);
       displayFlashMessageHandler("Review saved successfully !", "success");
     }).catch((error) => {
