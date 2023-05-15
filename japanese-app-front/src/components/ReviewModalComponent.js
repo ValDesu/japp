@@ -458,6 +458,8 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
 
                     {isReviewFinished ? 
                         <Confetti
+                        width={window.innerWidth}
+                        height={window.innerHeight}
                         recycle={false}
                         gravity={0.2}
                         />
