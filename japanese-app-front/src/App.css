@@ -7,6 +7,25 @@ body {
   background-color: #35373b;
 }
 
+.card-holder-vertical {
+  position: absolute;
+  display: grid;
+  padding-left: 10px;
+  white-space: nowrap;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  top: 0;
+  left: 0;
+
+  background-color: rgba(255, 255, 255, 0.058);
+  height: 100%;
+  width: 320px;
+  
+  border-radius: 0 15px 15px 0;
+  transition: all 0.3s ease-in-out;
+}
 
 .card-holder {
   position: absolute;
@@ -31,6 +50,34 @@ body {
   top: -250px;
 }
 
+.card-holder-hidden-vertical {
+  left: -340px;
+}
+
+.btn-switch-vertical-horizontal {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-switch-vertical-horizontal:hover {
+  color: rgba(255, 255, 255, 1);
+}
+
+.mobile-vertical-display{
+
+  @media (max-width: 600px) {
+    display: none;
+  }
+    
+}
+
 .App {
   background: linear-gradient(-45deg, #424549, #35373b, #3b3e41, #383b3e);
 	background-size: 400% 400%;
@@ -44,6 +91,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+
+.hero-body-vertical {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media screen and (max-width: 1200px) {
+    padding-left:320px !important;
+  }
 }
 
 .hero-body {
@@ -78,10 +135,6 @@ body {
   width: 50%;
   max-width: 500px;
   font-size: 1.2rem;
-
-  @media screen and (max-width: 907px) {
-    width: 70%;
-  }
 }
 
 .search-bar:focus {

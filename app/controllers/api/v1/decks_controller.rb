@@ -25,7 +25,7 @@ class Api::V1::DecksController < ApplicationController
         #skip card if not found
         next
       end
-      
+
       if r_card[:isCorrect]
         @card.correct += 1
       else
@@ -102,11 +102,11 @@ class Api::V1::DecksController < ApplicationController
   # GET /decks/search
   def search
     if !params[:name] || params[:name].empty?
-      #if name empty, return all decks
-      @decks = Deck.all
+      #if name empty, return all decks, order by number of "done" in descending order
+      @decks = Deck.order(done: :desc).offset(params[:page]*6).limit(6)
     else
       #if name not empty, search for deck containing name, limit to 6 results
-      @decks = Deck.where("name LIKE ?", "%#{params[:name]}%").offset(params[:page]*6).limit(6)    
+      @decks = Deck.order(done: :desc).where("name LIKE ?", "%#{params[:name]}%").offset(params[:page]*6).limit(6)    
     end
 
     if @decks

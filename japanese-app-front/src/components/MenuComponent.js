@@ -8,7 +8,7 @@ const BubbleMenu = styled.div`
   width: 6rem;
   height: 6rem;
   border-radius: 50%;
-  z-index: 10;
+  z-index: 5;
   background-color: rgb(51, 230, 153);
 
   bottom: 3rem;

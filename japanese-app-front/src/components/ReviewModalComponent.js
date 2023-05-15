@@ -33,6 +33,31 @@ const ModalContainer = styled.div`
     }
 `;
 
+const ExitButtonModal = styled.button`
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1rem;
+    background-color: #424549;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.3rem 1rem;
+    font-size: 1.3rem;
+    z-index: 11;
+    
+    &:hover {
+        cursor: pointer;
+    }
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        margin: .7rem;
+        font-size: 1.2rem;
+        background-color: transparent;
+    }
+`;
+
 const TransparentClockTimer = styled.div`
     position: absolute;
     display: flex;
@@ -321,6 +346,11 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
         onCloseFinished({reviewedCards: reviewedCards});
     };
 
+    const handleOnClose = () => {
+        console.log('handleOnClose');
+        onClose();
+    };
+
     
     useEffect(() => {
         if (isReviewFinished) return;
@@ -406,6 +436,7 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
 
     return (
         <ModalContainer>
+            <ExitButtonModal onClick={handleOnClose}>❌</ExitButtonModal>
             <TransparentClockTimer>
                 <span>{minute.toString().padStart(2, "0")} : {second.toString().padStart(2, "0")}</span>
             </TransparentClockTimer>

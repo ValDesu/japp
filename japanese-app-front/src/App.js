@@ -80,6 +80,7 @@ function App() {
   const [savedCards, setSavedCards] = useState([]);
 
   //Search states
+  const [isVertical, setIsVertical] = useState(window.innerWidth > 768);
   const [requestQueue, setRequestQueue] = useState([]);
   const [filterCommon, setFilterCommon] = useState(false);
   const [displayCardHolder, setDisplayCardHolder] = useState("card-holder-hidden");
@@ -140,6 +141,12 @@ function App() {
       setLoading(false);
       setIsReviewing(false);
     });
+  };
+
+  const onCloseReview = () => {
+    setIsReviewing(false);
+    setReviewCards([]);
+    setReviewSetting(new IReviewSetting());
   };
 
 
@@ -316,6 +323,7 @@ function App() {
       {isEditing && <EditNotifierComponent deckName={currentDeck.name} onClose={onCancelEdit}/> }
       {isReviewing && <ReviewModalComponent
         onCloseFinished={saveReview}
+        onClose={onCloseReview}
         reviewSetting={reviewSetting} 
         cards={reviewCards}
       />}
@@ -351,7 +359,7 @@ function App() {
         isEditing={isEditing}
 
       />
-
+      {!isReviewing && 
       <MenuComponent 
         displayNotification={displayNotification}
         isEditing={isEditing}
@@ -360,8 +368,9 @@ function App() {
         onDeckList={displayModalDeckListHandler.bind(this, {'name': "", 'page': 0})}
         onEdit={setDisplayModalEdit.bind(this, true)}
       />
+      }
             
-      <div className={`card-holder ${blur} ${displayCardHolder}`} >
+      <div className={`${isVertical ? "card-holder-vertical" : "card-holder"} ${blur}`} >
         {cards.map((card) => (
           <CardComponent
             key={card.slug}
@@ -374,10 +383,13 @@ function App() {
             isSaved={savedCards.some((savedCard) => savedCard.slug === card.slug)}
           />
         ))}
+        {cards.length > 0 ? 
+        <button className="btn-switch-vertical-horizontal" onClick={setIsVertical.bind(this, !isVertical)}>🔄</button>
+        : null}
       </div>
       <div className="hero">
-        <div className="hero-body">
-          <div className="container has-text-centered ">
+        <div className={`hero-body ${isVertical ? "hero-body-vertical" : ""}`}>
+          <div className={`container has-text-centered ${isVertical ? "mobile-vertical-display" : ""}`}>
             <img src={logo} alt="logo" className="logo" />
             <p className="title is-5 has-text-white">Look for any word !</p>
             <input

@@ -5,7 +5,7 @@ const BubbleMenuItem = styled.div`
   width: 15rem;
   height: 3rem;
   border-radius: 5rem;
-  z-index: 10;
+  z-index: 5;
   background-color: #33e699;
   color: #36383c;
   align-items:center;
