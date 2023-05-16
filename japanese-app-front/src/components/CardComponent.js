@@ -85,10 +85,34 @@ const CardButton = styled.button`
   }
 `;
 
-const CardComponent = ({ title, reading, description, pillText, onBookmarkClick, isCommon, isSaved }) => {
+const FloatingTwitterButton = styled.button`
+  float: right;
+  width:2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: #fff;
+  font-size: auto;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: all 0.3s ease-in-out;
+
+
+  &:hover {
+    transform: scale(1.7);
+    opacity: 1;
+  }
+`;
+
+const CardComponent = ({ title, reading, description, pillText, onBookmarkClick, isCommon, isSaved, onClickTwitterSentence }) => {
+  const handleTwitterClick = (slug) => {
+    onClickTwitterSentence({slug: slug});
+  }
   return (
     <CardContainer isCommon={isCommon}>
       <div className="card-content">
+        <FloatingTwitterButton onClick={handleTwitterClick.bind(this, title)}>🌐</FloatingTwitterButton>
         <CardReading>{reading}</CardReading>
         <CardTitle className="title">{title}</CardTitle>
         <CardDescription className="subtitle">{description}</CardDescription>

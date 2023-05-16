@@ -16,6 +16,7 @@ import ReviewModalComponent from "./components/ReviewModalComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
+const API_TWITTER = "http://localhost:3000/api/v1/twitter/";
 
 class ICard {
   constructor(
@@ -78,6 +79,14 @@ function App() {
   //Cards states
   const [cards, setCards] = useState([]);
   const [savedCards, setSavedCards] = useState([]);
+
+  const onClickTwitterSentence = ({slug}) => {
+    axios.post(API_TWITTER + "retrieve/", {word: slug}).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
 
   //Search states
   const [isVertical, setIsVertical] = useState(window.innerWidth > 768);
@@ -381,6 +390,7 @@ function App() {
             isCommon={card.isCommon}
             onBookmarkClick={onBookmarkClick.bind(this, card)}
             isSaved={savedCards.some((savedCard) => savedCard.slug === card.slug)}
+            onClickTwitterSentence={onClickTwitterSentence}
           />
         ))}
         {cards.length > 0 ? 

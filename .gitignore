@@ -28,6 +28,7 @@
 /tmp/storage/*
 !/tmp/storage/
 !/tmp/storage/.keep
+/config/local_env.yml
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key

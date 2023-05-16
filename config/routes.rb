@@ -14,6 +14,8 @@ Rails.application.routes.draw do
 
       get '/jisho/:word', to: 'jisho#getWord'
       get '/jisho/common/:word', to: 'jisho#getCommonWord'
+
+      post '/twitter/retrieve', to: 'twitter#retrieveTweets'
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
