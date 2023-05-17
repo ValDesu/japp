@@ -17,7 +17,8 @@ class Api::V1::TwitterController < ApplicationController
 
         #tweets don't exist, retrieve them from Twitter API
         # Set up the Twitter API client using your API keys
-        conn = Faraday.new('https://api.twitter.com/2/tweets/search') do |faraday|
+        #https://developer.twitter.com/en/docs/twitter-api/tweets/search/integrate/build-a-query
+        conn = Faraday.new('https://api.twitter.com/1.1/search/tweets.json') do |faraday|
             faraday.headers['Authorization'] = "Bearer #{ENV['TWITTER_API_BEARER_TOKEN']}"
             faraday.headers['Content-Type'] = 'application/json'
             faraday.adapter Faraday.default_adapter
@@ -60,12 +61,40 @@ class Api::V1::TwitterController < ApplicationController
                 })
             end
 
-            return {tweets: extracted_tweets, from_twitter: true}
+            render json: {tweets: extracted_tweets, from_twitter: true}
         else
             puts "failure"
             # Handle the API request failure
             error_message = JSON.parse(response.body)
-            return error_message
+            render json: {error: error_message}, status: :unprocessable_entity
+        end
+    end
+
+    #Because Twitter API is too expensive, I'm using a free API to get Japanese sentences
+    #https://tatoeba.org/fr/api_v0/search?from=ja&query=params[:word]&sort=random&max=2
+    def retrieveSentences 
+        conn = Faraday.new('https://tatoeba.org/en/api_v0/search') do |faraday|
+            faraday.headers['Content-Type'] = 'application/json'
+            faraday.adapter Faraday.default_adapter
+          end
+      
+          # Send the API request
+          response = conn.get do |req|
+            req.params['from'] = 'ja'
+            req.params['to'] = 'en'
+            req.params['query'] = params[:word]
+            req.params['sort'] = 'random'
+          end
+
+        puts "sending request"
+        if response.status == 200
+            puts "success"
+            # Parse the JSON response
+            render json: {sentences: JSON.parse(response.body)['results'].sample(2), from_twitter: false}
+        else
+            puts "failure"
+            # Handle the API request failure
+            render json: {error: "error_message"}, status: :unprocessable_entity
         end
     end
 end
