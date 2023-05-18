@@ -13,10 +13,11 @@ import ModalEditComponent from "./components/ModalEditComponent";
 import EditNotifierComponent from "./components/EditNotifierComponent";
 import ReviewFlashcardsSettingComponent from "./components/ReviewFlashcardsSettingComponent";
 import ReviewModalComponent from "./components/ReviewModalComponent";
+import SentencesComponent from "./components/SentencesComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
-const API_TWITTER = "http://localhost:3000/api/v1/twitter/";
+
 
 class ICard {
   constructor(
@@ -79,13 +80,14 @@ function App() {
   //Cards states
   const [cards, setCards] = useState([]);
   const [savedCards, setSavedCards] = useState([]);
+  const [displayExample, setDisplayExample] = useState(false);
+  const [sentenceSlug, setSentenceSlug] = useState("");
 
   const onClickTwitterSentence = ({slug}) => {
-    axios.post(API_TWITTER + "retrieve/", {word: slug}).then((res) => {
-      console.log(res);
-    }).catch((err) => {
-      console.log(err);
-    });
+    setDisplayExample(true);
+    setSentenceSlug(slug);
+    return;
+    
   };
 
   //Search states
@@ -398,7 +400,9 @@ function App() {
         : null}
       </div>
       <div className="hero">
+        
         <div className={`hero-body ${isVertical ? "hero-body-vertical" : ""}`}>
+        <SentencesComponent display={displayExample} slug={sentenceSlug} isVertical={isVertical}/>
           <div className={`container has-text-centered ${isVertical ? "mobile-vertical-display" : ""}`}>
             <img src={logo} alt="logo" className="logo" />
             <p className="title is-5 has-text-white">Look for any word !</p>

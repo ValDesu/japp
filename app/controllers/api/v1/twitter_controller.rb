@@ -90,11 +90,11 @@ class Api::V1::TwitterController < ApplicationController
         if response.status == 200
             puts "success"
             # Parse the JSON response
-            render json: {sentences: JSON.parse(response.body)['results'].sample(2), from_twitter: false}
+            render json: {sentences: JSON.parse(response.body)['results'].sample(1), from_twitter: false}
         else
             puts "failure"
             # Handle the API request failure
-            render json: {error: "error_message"}, status: :unprocessable_entity
+            render json: {error: "Could not get sentences"}, status: :unprocessable_entity
         end
     end
 end
