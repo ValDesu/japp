@@ -33,6 +33,8 @@ Please note that the code is still in development, and security and optimization
 
 ## 🔜 Future Development
 
+🛑Right now, we are just putting out a proof of concept. For the released version of JAPP, the dictionary will be in our own database (stop using Jisho API), and the cards-deck relationship will be different, optimizing queries and statistics.🛑
+
 We're always working to improve JAPP, and we have big plans for the future, including:
 
 - Authentication with Google account to keep track of your activities and stats! 🔐
