@@ -75,6 +75,27 @@ const Spinner = styled.div`
     margin-left: 50%;
 `;
 
+const TwitterCornerButton = styled.div`
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    background-color: rgb(29, 161, 242, 0.3);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+    color: transparent;
+    text-shadow: 0 0 0 #fff;
+
+    &:hover {
+        background-color: rgb(29, 161, 242);
+    }
+`;
+
 const SentencesComponent = ({display, slug, isVertical}) => {
 
     const [isLoading, setIsLoading] = useState(true);
@@ -92,9 +113,36 @@ const SentencesComponent = ({display, slug, isVertical}) => {
 
     const getSentence = (slug) => {
         axios.post(API_TWITTER + "retrieve/", {word: slug}).then((res) => {
+            console.log(res.data);
+            //verify if there is a sentence
+            if(res.data.sentences.length === 0) {
+                setSentence("No sentence found 😿");
+                setSentenceTranslation("Try using the twitter button and find real life examples !");
+                setIsLoading(false);
+                return;
+            }
+
+            //verify sentence is japanese
+            if(res.data.sentences[0].lang !== "jpn") {
+                setSentence("No japanese sentence found 😿");
+                setSentenceTranslation("Try using the twitter button and find real life examples !");
+                setIsLoading(false);
+                return;
+            }
+
+            //verify if there is a translation
+            if(res.data.sentences[0].translations.length === 0) {
+                setSentence(res.data.sentences[0].text);
+                setSentenceTranslation("No translation found");
+                setIsLoading(false);
+                return;
+            }
+
+            //verifu
             setSentence(highlightWord(res.data.sentences[0].text, slug));
             setSentenceTranslation(res.data.sentences[0].translations[0].filter((word) => word.lang === "eng")[0].text);
             setIsLoading(false);
+
         }).catch((err) => {
             console.log(err);
         });
@@ -116,6 +164,9 @@ const SentencesComponent = ({display, slug, isVertical}) => {
              <Spinner />
              : 
              <>
+                <TwitterCornerButton onClick={() => window.open(`https://twitter.com/search?q=${slug}%20lang%3Aja&src=typed_query`, "_blank")}>
+                    🐤
+                </TwitterCornerButton>
                 <Sentence>
                     {sentence}
                 </Sentence>
