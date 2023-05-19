@@ -15,6 +15,7 @@ const SentenceHolder = styled.div`
     box-shadow: 0px 0px 15px 10px rgba(0,0,0,0.1);
 
     transition: all 0.5s ease-in-out;
+    z-index: 10;
 
     //adapt to mobile
     @media (max-width: 600px) {
@@ -72,7 +73,7 @@ const Spinner = styled.div`
     width: 35px;
     height: 35px;
     animation: ${spin} 4s linear infinite;
-    margin-left: 50%;
+    margin-left: 48%;
 `;
 
 const TwitterCornerButton = styled.div`
@@ -96,7 +97,28 @@ const TwitterCornerButton = styled.div`
     }
 `;
 
-const SentencesComponent = ({display, slug, isVertical}) => {
+const CloseButton = styled.div`
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    background-color: transparent;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+    color: rgba(0,0,0,0.3);
+    
+    &:hover {
+        color: rgba(0,0,0,1);
+    }
+`;
+
+
+const SentencesComponent = ({display, slug, isVertical, onClose}) => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [sentence, setSentence] = useState("");
@@ -131,7 +153,7 @@ const SentencesComponent = ({display, slug, isVertical}) => {
             }
 
             //verify if there is a translation
-            if(res.data.sentences[0].translations.length === 0) {
+            if(res.data.sentences[0].translations.length === 0 || res.data.sentences[0].translations[0].filter((word) => word.lang === "eng").length === 0 ) {
                 setSentence(res.data.sentences[0].text);
                 setSentenceTranslation("No translation found");
                 setIsLoading(false);
@@ -151,7 +173,10 @@ const SentencesComponent = ({display, slug, isVertical}) => {
 
 
     useEffect(() => {
-        if(slug === "") return;
+        console.log(slug);
+        if(slug === "") {
+            return;
+        }
         setIsLoading(true);
         getSentence(slug);
     }, [slug]);
@@ -167,6 +192,9 @@ const SentencesComponent = ({display, slug, isVertical}) => {
                 <TwitterCornerButton onClick={() => window.open(`https://twitter.com/search?q=${slug}%20lang%3Aja&src=typed_query`, "_blank")}>
                     🐤
                 </TwitterCornerButton>
+                <CloseButton onClick={onClose}>
+                    ❌
+                </CloseButton>
                 <Sentence>
                     {sentence}
                 </Sentence>

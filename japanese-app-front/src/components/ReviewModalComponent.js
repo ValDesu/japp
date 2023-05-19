@@ -1,6 +1,7 @@
 import styled, { keyframes } from 'styled-components';
 import { useEffect, useState, useRef} from "react";
 import Confetti from 'react-confetti';
+import SentencesComponent from './SentencesComponent';
 
 const SpinAnimation = keyframes`
     0% {
@@ -186,6 +187,14 @@ const FlashCardQuestionText = styled.h1`
     font-family: 'Orbitron', sans-serif;
     text-align: center;
     color: #fff;
+
+    //clamp text if too long
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+
 
     //adapt to mobile
     @media (max-width: 907px) {
@@ -436,6 +445,13 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
 
     return (
         <ModalContainer>
+            <SentencesComponent
+            display={isQuestion ? false : true}
+            slug={isQuestion ? "" : toReviewCards[0].card.slug}
+            isVertical={false}
+            onClose={null}
+            />
+                    
             <ExitButtonModal onClick={handleOnClose}>❌</ExitButtonModal>
             <TransparentClockTimer>
                 <span>{minute.toString().padStart(2, "0")} : {second.toString().padStart(2, "0")}</span>
@@ -506,9 +522,10 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
                                 : null
                             }
                             </>
-
                             :null
                         }
+                        
+                           
                     </FlashCardContent>
                     <ModalFooterButtonsHolder>
                         {isQuestion ? 
@@ -520,6 +537,7 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
                         </>
                         }
                     </ModalFooterButtonsHolder>
+                    
                     </>
                     : null}
                     {isReviewFinished ?

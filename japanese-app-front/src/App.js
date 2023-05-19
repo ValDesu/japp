@@ -119,6 +119,7 @@ function App() {
   };
 
   const onStartReview = (reviewSetting) => {
+    setDisplayExample(false);
     setDisplayCardHolder("card-holder-hidden");
     setLoading(true);
     setReviewSetting(reviewSetting);
@@ -402,7 +403,7 @@ function App() {
       <div className="hero">
         
         <div className={`hero-body ${isVertical ? "hero-body-vertical" : ""}`}>
-        <SentencesComponent display={displayExample} slug={sentenceSlug} isVertical={isVertical}/>
+        <SentencesComponent display={displayExample} slug={sentenceSlug} isVertical={isVertical} onClose={() => {setDisplayExample(false)}}/>
           <div className={`container has-text-centered ${isVertical ? "mobile-vertical-display" : ""}`}>
             <img src={logo} alt="logo" className="logo" />
             <p className="title is-5 has-text-white">Look for any word !</p>

@@ -90,6 +90,7 @@ class Api::V1::TwitterController < ApplicationController
         if response.status == 200
             puts "success"
             # Parse the JSON response
+            #TODO : Check the sample to ensure there is an japanese sentence and english translation
             render json: {sentences: JSON.parse(response.body)['results'].sample(1), from_twitter: false}
         else
             puts "failure"
