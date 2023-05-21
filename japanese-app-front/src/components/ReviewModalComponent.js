@@ -308,7 +308,34 @@ const SeparatorLine = styled.div`
     margin-bottom: 1rem;
 `;
 
+const AnswerInput = styled.input`
+    width: 80%;
+    height: 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.3rem 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #fff;
+    font-size: 1.5cqw;
+    font-weight: 100;
 
+    //adapt to mobile
+    @media (max-width: 907px) {
+        font-size: 4cqw;
+    }
+`;
+
+const GoodAnswerText = styled.p`
+    font-size: 1.5cqw;
+    font-weight: 100;
+    color: #fff;
+    text-align: center;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        font-size: 4cqw;
+    }
+`;
 
 
 class ICardReview {
@@ -342,6 +369,7 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
     const [isReviewFinished, setIsReviewFinished] = useState(false);
     const isInitialMount = useRef(true);
     const flashCardContentRef = useRef(null);
+    const [answerInput, setAnswerInput] = useState('');
 
     const [timeClock, setTimeClock] = useState(0);
     const [isQuestion, setIsQuestion] = useState(true);
@@ -373,6 +401,7 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
 
     useEffect(() => {
         if (isInitialMount.current) {
+            console.log(reviewSetting);
           isInitialMount.current = false;
         } else {
           const updatedToReviewCards = cards.map((element) => {
@@ -529,11 +558,31 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
                     </FlashCardContent>
                     <ModalFooterButtonsHolder>
                         {isQuestion ? 
+                        <>
                         <FlashCardButton color={'rgb(17 42 52)'} onClick={handleShowAnswer}>🔄</FlashCardButton>
+                        {
+                            reviewSetting.reviewExercice === '2' ?
+                            <AnswerInput placeholder={'Type the answer here'} onChange={(e) => {setAnswerInput(e.target.value)}}/>
+                            : null
+                        }
+                        </>
+                        :
+                        <>
+                        {
+                        //if answer is same as slug or reading or one of the meanings then it's correct
+                        reviewSetting.reviewExercice === '2' && ((toReviewCards[0].side === 'meaning' && (toReviewCards[0].card.slug === answerInput || toReviewCards[0].card.reading === answerInput )) ||
+                        (toReviewCards[0].side === 'slug' && toReviewCards[0].card.meanings.includes(answerInput))) ?
+                        <>
+                        <GoodAnswerText>Perfect !</GoodAnswerText>
+                        <FlashCardButton color={'rgb(55 50 80)'} onClick={handleValidateAnswer.bind(this, {result: 'correct'})}>✔️</FlashCardButton>
+                        </>
                         :
                         <>
                         <FlashCardButton color={'rgb(55 50 80)'} onClick={handleValidateAnswer.bind(this, {result: 'correct'})}>✔️</FlashCardButton>
                         <FlashCardButton color={'rgb(78 35 35)'} onClick={handleValidateAnswer.bind(this, {result: 'wrong'})}>❌</FlashCardButton>
+                        </>
+                        }
+                        
                         </>
                         }
                     </ModalFooterButtonsHolder>
