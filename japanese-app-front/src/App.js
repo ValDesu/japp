@@ -401,7 +401,6 @@ function App() {
         : null}
       </div>
       <div className="hero">
-        
         <div className={`hero-body ${isVertical ? "hero-body-vertical" : ""}`}>
         <SentencesComponent display={displayExample} slug={sentenceSlug} isVertical={isVertical} onClose={() => {setDisplayExample(false)}}/>
           <div className={`container has-text-centered ${isVertical ? "mobile-vertical-display" : ""}`}>

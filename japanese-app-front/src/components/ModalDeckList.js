@@ -173,7 +173,7 @@ const ModalFooter = styled.div`
 `;
 
 const ButtonNextPage = styled.button`
-    background-color: rgb(240, 240, 240);
+    background-color: transparent;
     border: none;
     border-radius: 50%;
     padding: 0.5rem;
@@ -213,9 +213,10 @@ const SearchButton = styled.button`
     cursor: pointer;
 `;
 
-
-
-
+const PageNumber = styled.span`
+    color:rgb(100 100 100);
+    font-size: 1rem;
+`;
 
 const ModalDeckList = ({isOpen, onClose, onSearch ,decks, onOpenReviewSetting}) => {
     const deckSampleCards = (cards) => {
@@ -225,8 +226,23 @@ const ModalDeckList = ({isOpen, onClose, onSearch ,decks, onOpenReviewSetting}) 
 
     const searchDeckHandler = (e) => {
         e.preventDefault();
-        onSearch({name: searchTerm, page: searchPage});
+        setSearchPage(0);
+        onSearch({name: searchTerm, page: 0});
     };
+
+    const nextPageHandler = (dir) => {
+        if(searchPage + dir < 0) return;
+        console.log(searchPage + dir);
+        setSearchPage(prev => prev + dir);
+        onSearch({name: searchTerm, page: searchPage + dir});
+    }
+
+    const onCloseHandler = () => {
+        setSearchTerm("");
+        setSearchPage(0);
+        onClose();
+    }
+
 
     const [searchTerm, setSearchTerm] = useState("");
     const [searchPage, setSearchPage] = useState(0);
@@ -236,7 +252,7 @@ const ModalDeckList = ({isOpen, onClose, onSearch ,decks, onOpenReviewSetting}) 
             <ModalContent>
                 <ModalHeader>
                     <ModalTitle>All online decks</ModalTitle>
-                    <ModalCloseButton onClick={onClose}>❌</ModalCloseButton>
+                    <ModalCloseButton onClick={onCloseHandler.bind(this)}>❌</ModalCloseButton>
                 </ModalHeader>
                 <ModalScrollBox>
                     <ModalTable>
@@ -265,7 +281,7 @@ const ModalDeckList = ({isOpen, onClose, onSearch ,decks, onOpenReviewSetting}) 
                     </ModalTable>
                 </ModalScrollBox>
                 <ModalFooter>
-                    <ButtonNextPage rotation={'-90'}>🛆</ButtonNextPage>
+                    <ButtonNextPage rotation={'-90'} onClick={() => {nextPageHandler(-1)}}>🛆</ButtonNextPage>
                     <SearchBar 
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search decks..."
@@ -274,9 +290,10 @@ const ModalDeckList = ({isOpen, onClose, onSearch ,decks, onOpenReviewSetting}) 
                     {
                     //<SearchButton onClick={(e) => searchDeckHandler(e)}>Search</SearchButton>
                     }
-                    <ButtonNextPage rotation={'90'}>🛆</ButtonNextPage>
+                    <ButtonNextPage rotation={'90'} onClick={() => {nextPageHandler(1)}}>🛆</ButtonNextPage>
 
                 </ModalFooter>
+                <PageNumber>{searchPage}</PageNumber>
             </ModalContent>
         </ModalContainer>
     );
