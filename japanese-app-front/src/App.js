@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import "bulma/css/bulma.min.css";
 import logo from "./logo.png";
+import styled from "styled-components";
 import CardComponent from "./components/CardComponent";
 import ModalComponent from "./components/ModalComponent";
 import LoadingScreenComponent from "./components/LoadingScreenComponent";
@@ -51,6 +52,23 @@ class IReviewSetting {
   }
 }
 
+const DonationLink = styled.a`
+  color: rgba(255, 255, 255, 0.25);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: lighter;
+  cursor: pointer;
+  text-align: center;
+
+  position: absolute;
+  bottom: 1rem;
+  right: 50%;
+  transform: translateX(50%);
+
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
+`;
 function App() {
 
   //Timer of 5 minutes before modal asking to make donation
@@ -344,6 +362,8 @@ function App() {
 
   return (
     <div className="App">
+
+      <DonationLink onClick={setDisplayDonation.bind(this, true)}>made with love from Japan, hosted in France - consider helping ❤️</DonationLink>
       
       {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}
       {loading && <LoadingScreenComponent />}
