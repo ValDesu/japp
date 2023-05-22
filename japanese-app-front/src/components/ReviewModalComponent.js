@@ -465,17 +465,18 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
 
     useEffect(() => {
         flashCardContentRef.current.focus();
+        setDisplaySentence(!isQuestion);
     }, [isQuestion]);
 
-
+    const [displaySentence, setDisplaySentence] = useState(false);
 
     return (
         <ModalContainer>
             <SentencesComponent
-            display={isQuestion ? false : true}
+            display={displaySentence}
             slug={isQuestion ? "" : toReviewCards[0].card.slug}
             isVertical={false}
-            onClose={null}
+            onClose={setDisplaySentence.bind(this, false)}
             />
                     
             <ExitButtonModal onClick={handleOnClose}>❌</ExitButtonModal>
