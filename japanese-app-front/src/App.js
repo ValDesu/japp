@@ -14,10 +14,10 @@ import EditNotifierComponent from "./components/EditNotifierComponent";
 import ReviewFlashcardsSettingComponent from "./components/ReviewFlashcardsSettingComponent";
 import ReviewModalComponent from "./components/ReviewModalComponent";
 import SentencesComponent from "./components/SentencesComponent";
+import DonationComponent from "./components/DonationComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
-
 
 class ICard {
   constructor(
@@ -52,6 +52,21 @@ class IReviewSetting {
 }
 
 function App() {
+
+  //Timer of 5 minutes before modal asking to make donation
+  const [timer, setTimer] = useState(300);
+  const [displayDonation, setDisplayDonation] = useState(false);
+  
+  useEffect(() => {
+    if (timer === 0){
+      setDisplayDonation(true);
+      return;
+    }
+    const interval = setInterval(() => {
+      setTimer(timer - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [timer]);
 
   //Loading screen states
   const [loading, setLoading] = useState(false);
@@ -340,6 +355,10 @@ function App() {
         cards={reviewCards}
       />}
       
+      <DonationComponent
+        isOpen={displayDonation}
+        onClose={setDisplayDonation.bind(this, false)}
+        />
 
       <ReviewFlashcardsSettingComponent
         isOpen={displayModalReviewFlashcardsSetting}
