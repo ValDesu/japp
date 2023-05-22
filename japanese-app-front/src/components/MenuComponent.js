@@ -22,6 +22,10 @@ const BubbleMenu = styled.div`
         transform: scale(1.1);
     }
 
+    &:active {
+        transform: scale(0.9);
+    }
+
     //adapt to mobile
     @media (max-width: 907px) {
         width: 4rem;

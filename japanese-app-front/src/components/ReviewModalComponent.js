@@ -114,11 +114,6 @@ const ModalContentBorder = styled.div`
         height: 100%;
         border-radius: 0;
     }
-
-    @media (max-height: 700px) {
-        width: 100%;
-        height: 100%;
-    }
 `;
 
 const ModalContent = styled.div`
@@ -177,7 +172,7 @@ const FlashCardContent = styled.div`
 
     //adapt to mobile
     @media (max-width: 907px) {
-        height: 70%;
+        height: 55%;
     }
 `;
 
@@ -321,7 +316,9 @@ const AnswerInput = styled.input`
 
     //adapt to mobile
     @media (max-width: 907px) {
-        font-size: 4cqw;
+        font-size: 6cqw;
+        margin-left: 1rem;
+        height: 100%;
     }
 `;
 
@@ -559,12 +556,13 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
                     <ModalFooterButtonsHolder>
                         {isQuestion ? 
                         <>
-                        <FlashCardButton color={'rgb(17 42 52)'} onClick={handleShowAnswer}>🔄</FlashCardButton>
                         {
                             reviewSetting.reviewExercice === '2' ?
                             <AnswerInput placeholder={'Type the answer here'} onChange={(e) => {setAnswerInput(e.target.value)}}/>
                             : null
                         }
+                        <FlashCardButton color={'rgb(17 42 52)'} onClick={handleShowAnswer}>🔄</FlashCardButton>
+
                         </>
                         :
                         <>
