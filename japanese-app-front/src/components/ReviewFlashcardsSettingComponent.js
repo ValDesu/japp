@@ -186,8 +186,8 @@ const ReviewFlashcardsSettingComponent = ({isOpen, onClose, onStart}) => {
                         }
                     }>
                         <option value="1">English and Japanese</option>
-                        <option value="2">English to Japanese</option>
-                        <option value="3">Japanese to English</option>
+                        <option disabled value="2">English to Japanese (soon)</option>
+                        <option disabled value="3">Japanese to English (soon)</option>
                     </ModalReviewModeSelectInput>
                 </ModalSelectAndLabelContainer>
 
@@ -203,7 +203,7 @@ const ReviewFlashcardsSettingComponent = ({isOpen, onClose, onStart}) => {
                     }>
                         <option value="1">Just flashcards</option>
                         <option value="2">Flashcards and typing</option>
-                        <option value="3">AI output exercices</option>
+                        <option disabled value="3">AI output exercices (soon)</option>
                     </ModalReviewModeSelectInput>
                 </ModalSelectAndLabelContainer>
 
