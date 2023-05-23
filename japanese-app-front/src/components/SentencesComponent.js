@@ -117,12 +117,33 @@ const CloseButton = styled.div`
     }
 `;
 
+const SwitchToReadingButton = styled.div`
+    bottom: 5px;
+    left: 5px;
+    width: 25px;
+    height: 25px;
+    background-color: transparent;
+    border-radius: 50%;
+    display: inline;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+    color: rgba(0,0,0,0.3);
+
+    &:hover {
+        color: rgba(0,0,0,1);
+    }
+`;
+
 
 const SentencesComponent = ({display, slug, isVertical, onClose}) => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [sentence, setSentence] = useState("");
     const [sentenceTranslation, setSentenceTranslation] = useState("");
+    const [sentenceReading, setSentenceReading] = useState("");
+    const [displayReading, setDisplayReading] = useState(false);
 
     const highlightWord = (input, word) => {
         const regex = new RegExp(`(${word})`, 'gi');
@@ -163,6 +184,7 @@ const SentencesComponent = ({display, slug, isVertical, onClose}) => {
             //verifu
             setSentence(highlightWord(res.data.sentences[0].text, slug));
             setSentenceTranslation(res.data.sentences[0].translations[0].filter((word) => word.lang === "eng")[0].text);
+            setSentenceReading(res.data.sentences[0].transcriptions[0].text);
             setIsLoading(false);
 
         }).catch((err) => {
@@ -199,7 +221,7 @@ const SentencesComponent = ({display, slug, isVertical, onClose}) => {
                     {sentence}
                 </Sentence>
                 <SentenceTranslation>
-                    {sentenceTranslation}
+                    {displayReading ? sentenceReading : sentenceTranslation} <SwitchToReadingButton onClick={setDisplayReading.bind(this, !displayReading)}>◀️</SwitchToReadingButton>
                 </SentenceTranslation>
              </>
             }
