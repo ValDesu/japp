@@ -21,7 +21,9 @@ Our one-page app is stylish, easy-to-use, and packed with features, including:
 
 ## 🌐 Deployment
 
-Currently, the application is open-source and can be run locally, but we plan to make it accessible on the web at gxbl.in/japp or japp.dev. Stay tuned! 😎
+Currently, the application is open-source and can be run locally, but we plan to make it accessible on the web. Stay tuned! 😎
+
+🔗 https://www.learnj.app/
 
 ## 🚨 Security
 
