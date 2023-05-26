@@ -16,9 +16,11 @@ import ReviewFlashcardsSettingComponent from "./components/ReviewFlashcardsSetti
 import ReviewModalComponent from "./components/ReviewModalComponent";
 import SentencesComponent from "./components/SentencesComponent";
 import DonationComponent from "./components/DonationComponent";
+import WarningSaveIPComponent from "./components/WarningSaveIPComponent";
 
 const API_JISHO = "http://localhost:3000/api/v1/jisho/";
 const API_DECKS = "http://localhost:3000/api/v1/decks/";
+const API_IP = "http://localhost:3000/api/v1/ip/";
 
 class ICard {
   constructor(
@@ -151,11 +153,24 @@ function App() {
     console.log(btn.target.getAttribute("data-deck-id"));
   };
 
+  const [displayWarningFreeTry, setDisplayWarningFreeTry] = useState(false);
+
   const onStartReview = (reviewSetting) => {
+  
     setDisplayExample(false);
     setDisplayCardHolder("card-holder-hidden");
-    setLoading(true);
+    setLoading(true)
     setReviewSetting(reviewSetting);
+
+    if(reviewSetting.reviewExercice === "3"){
+      //state display warning free try
+      setDisplayWarningFreeTry(true);
+      setDisplayModalDeckList(false);
+      setDisplayModalReviewFlashcardsSetting(false);
+      return;
+    }
+
+    ;
 
     axios.post(API_DECKS + "review/", {'deck_id': reviewDeckID, 'review_setting': reviewSetting} ).then((response) => {
       console.log(response.data);
@@ -374,6 +389,14 @@ function App() {
         reviewSetting={reviewSetting} 
         cards={reviewCards}
       />}
+      {displayWarningFreeTry && 
+        <WarningSaveIPComponent
+          onClose={setDisplayWarningFreeTry.bind(this, false)}
+          onStart={null}
+          API_URL={API_IP}
+          stopLoadingCallback={setLoading.bind(this, false)}
+        />
+      }
       
       <DonationComponent
         isOpen={displayDonation}
