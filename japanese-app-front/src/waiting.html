@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAPP</title>
+</head>
+<style>
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #35373b;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-title {
+  font-family: "Roboto", sans-serif;
+  font-size: 3.2cqw;
+  color: rgb(77, 77, 77);
+  text-align: center;
+
+  @media screen and (max-width: 768px) {
+    font-size: 6cqw;
+    
+  }
+}
+
+
+
+span {
+    color: rgb(51, 230, 153);
+}
+
+.logo {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -10%);
+}
+
+img {
+    width: 8rem;
+    height: 4rem;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+    font-family: "Roboto", sans-serif;
+    font-size: 1rem;
+    color: rgb(94, 94, 94);
+    text-align: center;
+}
+
+a {
+    color: rgb(51, 230, 153);
+    text-decoration: none;
+}
+
+</style>
+<body>
+
+<div class="container">
+    <div class="logo">
+        <img src="https://i.imgur.com/vUdWszt_d.webp?maxwidth=760&fidelity=grand" alt="">
+    </div>
+    
+    <div class="center-title">
+        <h1>Very soon <span>JAPP</span> will be available here for <span id="word">you</span>.</h1>
+    </div>
+</div>
+<div class="footer">
+    <p>Learn more about <span>JAPP</span> on <a href="https://github.com/valdesu/japp" style="text-decoration: none;">GitHub</a>. </p>
+</div>
+</body>
+<script>
+    let words = ['free', 'everyone', 'japanese learners', 'fun', 'all', 'learning', 'flashcards review', 'practicing', 'mobile', 'computer', 'learning with friends', 'procrastinating instead of actually doing something 😅', 'looking up words', 'sharing knowledge'];
+    let word = document.getElementById('word');
+    let i = 0;
+    setInterval(() => {
+        word.innerHTML = words[i];
+        i++;
+        if(i == words.length) {
+            i = 0;
+        }
+    }, 1000);
+
+</script>
+</html>
