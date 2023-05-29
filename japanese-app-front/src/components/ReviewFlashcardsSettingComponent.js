@@ -154,8 +154,11 @@ const ReviewFlashcardsSettingComponent = ({isOpen, onClose, onStart}) => {
                         }
                     }>
                         <option value="1">All flashcards</option>
-                        <option value="2">20 flashcards</option>
-                        <option value="3">40 flashcards</option>
+                        {}
+                        <option value="2">10 flashcards (20 questions)</option>
+                        <option value="3">20 flashcards (40 questions)</option>
+                        <option value="4">30 flashcards (60 questions)</option>
+                        <option value="5">40 flashcards (80 questions)</option>
                     </ModalReviewModeSelectInput>
                 </ModalSelectAndLabelContainer>
 

@@ -597,7 +597,7 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
                                 You have finished reviewing all the cards in {minute.toString().padStart(2, "0")} : {second.toString().padStart(2, "0")}
                             </FinalScoreValue>
                             <FinalScoreValue>
-                                You have reviewed {reviewedCards.length} cards ({reviewedCards.length*2} questions)
+                                You have reviewed {reviewedCards.length/2} cards ({reviewedCards.length} questions)
                             </FinalScoreValue>
                             <FinalScoreValue>
                                 {reviewedCards.filter(card => card.isCorrect).length} correct answers and {reviewedCards.filter(card => !card.isCorrect).length} wrong answers

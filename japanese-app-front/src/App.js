@@ -150,7 +150,6 @@ function App() {
   const flashcardsSettingHandler = (btn) => {
     setDisplayModalReviewFlashcardsSetting(true);
     setReviewDeckID(btn.target.getAttribute("data-deck-id"));
-    console.log(btn.target.getAttribute("data-deck-id"));
   };
 
   const [displayWarningFreeTry, setDisplayWarningFreeTry] = useState(false);
@@ -382,7 +381,7 @@ function App() {
       
       {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}
       {loading && <LoadingScreenComponent />}
-      {isEditing && <EditNotifierComponent deckName={currentDeck.name} onClose={onCancelEdit}/> }
+      {isEditing && <EditNotifierComponent deckName={currentDeck.name} onClose={onCancelEdit} isVertical={isVertical}/> }
       {isReviewing && <ReviewModalComponent
         onCloseFinished={saveReview}
         onClose={onCloseReview}

@@ -12,8 +12,17 @@ const Pill = styled.span`
     font-size: 1rem;
     font-weight: bold;
 
-    bottom: 4rem;
+    bottom: 5.5rem;
     left: 2rem;
+    z-index: 15;
+    cursor: default;
+
+    opacity: ${props => props.isVertical ? 0.3 : 1};
+    transition: opacity 0.3s ease-in-out;
+
+    &:hover {
+        opacity: 1;
+    }
 `;
 
 //round white background button onClose
@@ -28,10 +37,10 @@ const CloseButton = styled.button`
     cursor: pointer;
 `;
 
-const EditNotifierComponent = ({deckName, onClose}) => {
+const EditNotifierComponent = ({deckName, onClose, isVertical}) => {
     return (
-        <Pill onClick={onClose}>Editing : {deckName}
-            <CloseButton>❌</CloseButton>
+        <Pill isVertical={isVertical}>Editing : {deckName}
+            <CloseButton onClick={onClose}>❌</CloseButton>
         </Pill>
     );
 };

@@ -66,10 +66,17 @@ class Api::V1::DecksController < ApplicationController
         #review with all cards
       when '2'
         #review with 20 cards
-        @cards = @cards.limit(20)
+        @cards = @cards.take(10)
+        puts @cards.length
       when '3'
         #review with 40 cards
-        @cards = @cards.limit(40)
+        @cards = @cards.take(20)
+      when '4'
+        #review with 60 cards
+        @cards = @cards.take(30)
+      when '5'
+        #review with 80 cards
+        @cards = @cards.take(40)
     end
 
 
