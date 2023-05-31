@@ -24,7 +24,8 @@ Our one-page app is stylish, easy-to-use, and packed with features, including:
 Currently, the application is open-source and can be run locally, but we plan to make it accessible on the web. Stay tuned! 😎
 
 🔗 https://www.learnj.app/
-🚧 https://www.test.learnj.app/ (you can test the app on the test server)
+
+🚧 https://test.learnj.app/ (you can test the app on the test server)
 
 ## 🚨 Security
 
