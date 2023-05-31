@@ -129,7 +129,7 @@ function App() {
   const [isVertical, setIsVertical] = useState(window.innerWidth > 768);
   const [requestQueue, setRequestQueue] = useState([]);
   const [filterCommon, setFilterCommon] = useState(false);
-  const [displayCardHolder, setDisplayCardHolder] = useState("card-holder-hidden");
+  const [displayCardHolder, setDisplayCardHolder] = useState("");
   const lastRequestItem = useRef('');
 
   //Decks states
@@ -204,6 +204,7 @@ function App() {
 
   const onCloseReview = () => {
     setIsReviewing(false);
+    setDisplayCardHolder("");
     setReviewCards([]);
     setReviewSetting(new IReviewSetting());
   };
@@ -274,7 +275,6 @@ function App() {
       if (lastRequestItem.current !== request) return;
 
       let cards = response.data.data.map((raw_card) => {
-        console.log(raw_card.is_common);
         return new ICard(
           raw_card.slug,
           raw_card.japanese[0].reading,
@@ -317,8 +317,10 @@ function App() {
 
   const handleInputChange = (event) => {
     let valid = event.target.value.length > 0;
-    setDisplayCardHolder( !valid ? "card-holder-hidden" : "");
-    if(!valid) return;
+    console.log(event.target.value, valid);
+    //setDisplayCardHolder( !valid ? "card-holder-hidden" : "");
+    
+    if(!valid){setCards([]); setBlur(false); return;}
 
     setRequestQueue((queue) => [...queue, event.target.value]);
   };
@@ -443,7 +445,7 @@ function App() {
       />
       }
             
-      <div className={`${isVertical ? "card-holder-vertical" : "card-holder"} ${blur}`} >
+      <div className={`${isVertical ? "card-holder-vertical" : "card-holder"} ${blur} ${isVertical ? displayCardHolder+"-vertical" : displayCardHolder}`} >
         {cards.map((card) => (
           <CardComponent
             key={card.slug}
