@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       post '/twitter/retrieve', to: 'twitter#retrieveSentences'
 
       post 'ip/free_try', to: 'ip_addresses#free_try'
+      post 'ip/register_ip', to: 'ip_addresses#register_ip'
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

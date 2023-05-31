@@ -393,7 +393,7 @@ function App() {
           onClose={setDisplayWarningFreeTry.bind(this, false)}
           onStart={null}
           API_URL={API_IP}
-          stopLoadingCallback={setLoading.bind(this, false)}
+          loadingCallback={(c) => {setLoading(c)}}
         />
       }
       

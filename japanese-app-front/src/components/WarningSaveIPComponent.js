@@ -83,23 +83,45 @@ const ModalIPAdressSpan = styled.span`
     color: rgb(51, 230, 153);
 `;
 
+const SpanWaitingTime = styled.span`
+    font-size: 1rem;
+    font-weight: bold;
+    color: rgb(51, 230, 153);
+`;
 
-const WarningSaveIPComponent = ({onClose, onStart, stopLoadingCallback, API_URL}) => {
+
+const WarningSaveIPComponent = ({onClose, onStart, loadingCallback, API_URL}) => {
 
     const [isFreeTry, setIsFreeTry] = useState(false);
     const [userIPAddress, setUserIPAddress] = useState("");
+    const [waitingTime, setWaitingTime] = useState("");
     const initialRender = useRef(true);
+
+    const startButtonHandler = () => {
+        loadingCallback(true);
+        axios.post(`${API_URL}register_ip`, {'ip': userIPAddress}).then((response) => {
+            console.log(response.data);
+            
+        }).catch((error) => {
+            console.log('error', error);
+            
+        }).finally(() => {
+            loadingCallback(false);
+            onClose();
+        });
+    };
 
     const checkForFreeTry = () => {
         //get user's IP address from https://api.ipify.org?format=json
-        axios.get("https://api.my-ip.io/ip.json").then((response) => {
+        axios.get("https://api4.my-ip.io/ip.json").then((response) => {
             setUserIPAddress(response.data.ip);
             const userIP = response.data.ip;
             //check if user's IP is in the database
-            axios.post(`${API_URL}/free_try`, {'ip': userIP}).then((response) => {
+            axios.post(`${API_URL}free_try`, {'ip': userIP}).then((response) => {
                 console.log(response.data);
                 setIsFreeTry(response.data.free_try);
-                stopLoadingCallback();
+                setWaitingTime(response.data.waiting_time);
+                loadingCallback(false);
             }).catch((error) => {
                 console.log(error);
                 onClose();
@@ -127,12 +149,15 @@ const WarningSaveIPComponent = ({onClose, onStart, stopLoadingCallback, API_URL}
                 </ModalHeader>
                 <ModalWarningText>
                     {!isFreeTry ? 
-                    `Your IP address was found in the database. You can't use this feature anymore.
-                    `
+                    <>
+                    Your IP address was found in the database. You can't use this feature anymore.
+                    You will be able to use it again in <SpanWaitingTime>{waitingTime}</SpanWaitingTime>.&nbsp;
+
+                    </>
                     : 
                     `Using the "AI output exercices" feature cost a lot of money.
                     Because JAPP is a free app, I can't afford to pay for it.
-                    Your IP address will be saved to prevent abuse, so you can use it only once.
+                    Your IP address will be saved to prevent abuse, so you can use it only once every 24 hours.
                     `
                     }
                     In the future, I will add a credit system to allow you to use it more often.
@@ -141,7 +166,7 @@ const WarningSaveIPComponent = ({onClose, onStart, stopLoadingCallback, API_URL}
                     Your IP address: {userIPAddress}
                 </ModalIPAdressSpan>
                 {
-                    isFreeTry && <ModalStartButton disabled={true} onClick={onStart}>I'm ok with storing my IP (soon)</ModalStartButton>
+                    isFreeTry && <ModalStartButton disabled={false} onClick={startButtonHandler}>I'm ok with storing my IP (soon)</ModalStartButton>
                 }
             </ModalContent>
         </ModalContainer>
