@@ -315,6 +315,7 @@ function App() {
 
 
   const handleInputChange = (event) => {
+    if(searchRequest === event.target.value){return;}
     let valid = event.target.value.length > 0;
     console.log(event.target.value, valid);
     //setDisplayCardHolder( !valid ? "card-holder-hidden" : "");
@@ -344,6 +345,16 @@ function App() {
 
     let deckName = btn.target.getAttribute("data-deck-name");
     let deckPassword = btn.target.getAttribute("data-deck-password");
+
+    //handle name and password security
+    if(deckName.length < 3 || deckPassword === null){
+      console.error("Error while creating deck");
+      //Display error message
+      displayFlashMessageHandler("Password or Name too short.", "error");
+      setLoading(false);
+      return;
+    }
+
     createDeck(deckName, deckPassword).then((response) => {
       setLoading(false);
       if(response === -1){

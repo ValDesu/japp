@@ -24,13 +24,14 @@ const ModalContent = styled.div`
     padding: 1rem;
     border-radius: 0.5rem;
     width: 70%;
-    height: 50%;
+    max-height: 80%;
 
     //adapt to mobile
     @media (max-width: 907px) {
         width: 100%;
         height: 100%;
         border-radius: 0;
+        max-height: 100%;
     }
 `;
 
@@ -80,14 +81,14 @@ const ModalTableData = styled.td`
 `;
 
 const ModalValidationButton = styled.button`
-    background-color: rgb(51, 230, 153);
+    background-color: ${props => props.isDisabled ? '#ddd' : 'rgb(51, 230, 153)'};
     border: none;
     border-radius: 9999px;
     color: #333;
     font-size: 1rem;
     font-weight: bold;
     padding: 0.5rem 1rem;
-    cursor: pointer;
+    pointer-events: ${props => props.isDisabled ? 'none' : 'auto'};
 `;
 
 const ModalFooter = styled.div`
@@ -167,13 +168,16 @@ const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromMod
                         </tbody>
                     </ModalTable>
                 </ModalScrollBox>
-            <WarningLabelPassword>⚠️ Password will be needed to updated this Deck. Don't use one of your usual passwords.</WarningLabelPassword>
+            {children.length < 5 && 
+            <WarningLabelPassword>⚠️ Decks must be at least 5 cards</WarningLabelPassword>
+            }
+            <WarningLabelPassword>⚠️ Password will be needed to updated this Deck. Don't use one of your usual passwords. (not encrypted)</WarningLabelPassword>
             <ModalFooter>
                 {!isEditing && 
                 <>
                     <ModalNameInput onChange={(e)=>setDeckName(e.target.value)} type="text" placeholder="Deck name" maxLength={30}/>
                     <ModalPasswordInput onChange={(e)=>setDeckPassword(e.target.value)} type="password" placeholder="Password"/>
-                    <ModalValidationButton onClick={onSave} data-deck-name={deckName} data-deck-password={deckPassword}>Save</ModalValidationButton>
+                    <ModalValidationButton onClick={onSave} data-deck-name={deckName} data-deck-password={deckPassword} isDisabled={children.length < 5}>Save</ModalValidationButton>
                 </>
                 }
 
