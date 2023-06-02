@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       get '/decks/edit', to: 'decks#edit'
       get '/decks/search', to: 'decks#search'
       post '/decks', to: 'decks#create'
+      delete '/decks', to: 'decks#destroy'
 
       get '/jisho/:word', to: 'jisho#getWord'
       get '/jisho/common/:word', to: 'jisho#getCommonWord'

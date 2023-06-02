@@ -204,9 +204,18 @@ class Api::V1::DecksController < ApplicationController
     end
   end
 
-  # DELETE /decks/1
+  # DELETE /decks/
   def destroy
-    @deck.destroy
+    #get deck by name and password
+    @deck = Deck.find_by(name: params[:name], password: params[:password])
+
+    if @deck
+      #destroy deck
+      @deck.destroy
+      render json: {message: "Deck deleted."}, status: :ok
+    else
+      render json: {error: "Name or Password might be wrong."}, status: :not_found
+    end
   end
 
   private

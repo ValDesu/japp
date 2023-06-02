@@ -88,7 +88,19 @@ const ModalValidationButton = styled.button`
     font-size: 1rem;
     font-weight: bold;
     padding: 0.5rem 1rem;
+    cursor: pointer;
     pointer-events: ${props => props.isDisabled ? 'none' : 'auto'};
+`;
+
+const ModalDeleteButton = styled.button`
+    background-color: rgb(255, 51, 51);
+    border: none;
+    border-radius: 9999px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
 `;
 
 const ModalFooter = styled.div`
@@ -133,9 +145,12 @@ const ModalRemoveButton = styled.button`
 `;
 
 
-const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromModal, isEditing, onUpdate }) => {
+
+
+const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromModal, isEditing, onUpdate, onDelete }) => {
     const [deckName, setDeckName] = useState("");
     const [deckPassword, setDeckPassword] = useState("");
+    const [confirmDelete, setConfirmDelete] = useState(false);
 
     return (
         <ModalContainer isOpen={isOpen}>
@@ -184,6 +199,14 @@ const ModalComponent = ({ children, isOpen, onClose, onSave, onRemoveCardFromMod
                 {isEditing &&
                 <>
                     <ModalValidationButton onClick={onUpdate}>Update</ModalValidationButton>
+                    {confirmDelete ?
+                    <>
+                    <ModalDeleteButton onClick={onDelete}>CONFIRM DELETE</ModalDeleteButton>
+                    <ModalValidationButton onClick={() => {setConfirmDelete(false)}}>Cancel</ModalValidationButton>
+                    </>
+                    :
+                    <ModalDeleteButton onClick={() => {setConfirmDelete(true)}}>Delete</ModalDeleteButton>
+                    }
                 </>
                 }
                 

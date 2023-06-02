@@ -143,6 +143,7 @@ function App() {
   const [reviewCards, setReviewCards] = useState([]);
 
   const onCancelEdit = () => {
+    setDisplayModalNewDeck(false);
     setIsEditing(false);
     setCurrentDeck({name: "", password: ""});
     setSavedCards([]);
@@ -340,6 +341,24 @@ function App() {
     });
   };
 
+  const onDeleteFromModal = () => {
+    setLoading(true);
+    axios.delete(API_DECKS,
+      { data: { name: currentDeck.name, password: currentDeck.password } }
+    ).then((response) => {
+      console.log(response.data);
+      displayFlashMessageHandler("Deck deleted successfully !", "success");
+    }).catch((error) => {
+      console.log(error.response.data.error);
+      displayFlashMessageHandler(error.response.data.error, "error");
+    }).finally(() => {
+      setDisplayModalNewDeck(false);
+      setDisplayModalEdit(false);
+      setIsEditing(false);
+      setLoading(false);
+    });
+  };
+
   const onSaveFromModal = (btn) => {
     setLoading(true);
 
@@ -443,6 +462,7 @@ function App() {
         onRemoveCardFromModal={onRemoveCardFromModal}
         onSave={onSaveFromModal}
         onUpdate={onUpdateFromModal}
+        onDelete={onDeleteFromModal}
         isEditing={isEditing}
 
       />
