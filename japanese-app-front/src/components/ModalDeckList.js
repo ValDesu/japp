@@ -267,7 +267,7 @@ const ModalDeckList = ({isOpen, onClose, onSearch ,decks, onOpenReviewSetting}) 
                         <tbody>
                             {decks.map((deck) => (
                                 <ModalTableRow key={deck.id}>
-                                    <DeckNameTableCell>{deck.name}</DeckNameTableCell>
+                                    <DeckNameTableCell onClick={onOpenReviewSetting} >{deck.name}</DeckNameTableCell>
                                     <CardNumberTableCell>{deck.cards.length}</CardNumberTableCell>
                                     <td>{deckSampleCards(deck.cards)}</td>
                                     <td>
