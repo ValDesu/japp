@@ -128,11 +128,10 @@ function App() {
 
   //Search states
   const [isVertical, setIsVertical] = useState(window.innerWidth > 768);
-  const [requestQueue, setRequestQueue] = useState([]);
   const [filterCommon, setFilterCommon] = useState(false);
   const [filterRomaji, setFilterRomaji] = useState(false);
   const [displayCardHolder, setDisplayCardHolder] = useState("");
-  const lastRequestItem = useRef('');
+  const [searchRequest, setSearchRequest] = useState("");
 
   //Decks states
   const [decks, setDecks] = useState([]);
@@ -278,7 +277,6 @@ function App() {
       request = `"${request}"`;
     }
     axios.get(API_JISHO + (filterCommon ? 'common/':'') + request).then((response) => {
-      if (lastRequestItem.current !== request) return;
 
       let cards = response.data.data.map((raw_card) => {
         return new ICard(
@@ -291,23 +289,18 @@ function App() {
       });
 
       setCards(cards);
+    }).finally(() => {
       setBlur("");
-    });
+      });
   };
 
   useEffect(() => {
-    if (requestQueue.length === 0) return;
-    
-    lastRequestItem.current = requestQueue[requestQueue.length - 1];
-    handleRequest(lastRequestItem.current);
-
-  }, [requestQueue]);
+    handleRequest(searchRequest);
+  }, [filterCommon]);
 
   useEffect(() => {
-    if (requestQueue.length === 0) return;
-
-    handleRequest(lastRequestItem.current);
-  }, [filterCommon]);
+    handleRequest(searchRequest);
+  }, [filterRomaji]);
 
   useEffect(() => {
     console.log(savedCards);
@@ -327,8 +320,8 @@ function App() {
     //setDisplayCardHolder( !valid ? "card-holder-hidden" : "");
     
     if(!valid){setCards([]); setBlur(false); return;}
-
-    setRequestQueue((queue) => [...queue, event.target.value]);
+    setSearchRequest(event.target.value);
+    handleRequest(event.target.value);
   };
 
   const onUpdateFromModal = () => {
@@ -485,9 +478,10 @@ function App() {
             <p className="title is-5 has-text-white">Look for any word !</p>
             <input
               type="text"
-              placeholder="探しましょうか..."
+              placeholder="検索しましょうか…"
               className="search-bar"
-              onChange={handleInputChange}
+              onBlur={handleInputChange}
+              onKeyDown={(e) => {if(e.key === "Enter"){handleInputChange(e)}}}
             />
             <div className="filter-container" >
               <div className="filter">
