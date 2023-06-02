@@ -2,8 +2,6 @@ import styled, {keyframes} from "styled-components";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_TWITTER = "http://localhost:3000/api/v1/twitter/";
-
 const SentenceHolder = styled.div`
     position: absolute;
     bottom: ${props => props.display ? '1rem' : '-150%'};
@@ -137,7 +135,7 @@ const SwitchToReadingButton = styled.div`
 `;
 
 
-const SentencesComponent = ({display, slug, isVertical, onClose}) => {
+const SentencesComponent = ({display, slug, isVertical, onClose, apiTwitter}) => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [sentence, setSentence] = useState("");
@@ -155,7 +153,7 @@ const SentencesComponent = ({display, slug, isVertical, onClose}) => {
     };
 
     const getSentence = (slug) => {
-        axios.post(API_TWITTER + "retrieve/", {word: slug}).then((res) => {
+        axios.post(apiTwitter + "retrieve/", {word: slug}).then((res) => {
             console.log(res.data);
             //verify if there is a sentence
             if(res.data.sentences.length === 0) {

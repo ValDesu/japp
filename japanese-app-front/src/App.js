@@ -18,9 +18,10 @@ import SentencesComponent from "./components/SentencesComponent";
 import DonationComponent from "./components/DonationComponent";
 import WarningSaveIPComponent from "./components/WarningSaveIPComponent";
 
-const API_JISHO = "http://localhost:3000/api/v1/jisho/";
-const API_DECKS = "http://localhost:3000/api/v1/decks/";
-const API_IP = "http://localhost:3000/api/v1/ip/";
+const API_JISHO   = process.env.REACT_APP_API_JISHO;
+const API_DECKS   = process.env.REACT_APP_API_DECKS;
+const API_IP      = process.env.REACT_APP_API_IP;
+const API_TWITTER = process.env.REACT_APP_API_TWITTER;
 
 class ICard {
   constructor(
@@ -465,7 +466,13 @@ function App() {
       </div>
       <div className="hero">
         <div className={`hero-body ${isVertical ? "hero-body-vertical" : ""}`}>
-        <SentencesComponent display={displayExample} slug={sentenceSlug} isVertical={isVertical} onClose={() => {setDisplayExample(false)}}/>
+        <SentencesComponent 
+          display={displayExample}
+          slug={sentenceSlug}
+          isVertical={isVertical}
+          onClose={() => {setDisplayExample(false)}}
+          apiTwitter={API_TWITTER}
+        />
           <div className={`container has-text-centered ${isVertical ? "mobile-vertical-display" : ""}`}>
             <img src={logo} alt="logo" className="logo" />
             <p className="title is-5 has-text-white">Look for any word !</p>
