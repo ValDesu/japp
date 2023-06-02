@@ -328,6 +328,17 @@ function App() {
 
   const onUpdateFromModal = () => {
     setLoading(true);
+    if(savedCards.length === 0){
+      onDeleteFromModal();
+      return;
+    }
+
+    if(savedCards.length < 5){
+      displayFlashMessageHandler("You need at least 5 cards to save a deck !", "error");
+      setLoading(false);
+      return;
+    }
+
     axios.put(API_DECKS + "update/",
       { name: currentDeck.name, password: currentDeck.password, cards: savedCards}
     ).then((response) => {
