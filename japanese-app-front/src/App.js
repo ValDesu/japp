@@ -130,6 +130,7 @@ function App() {
   const [isVertical, setIsVertical] = useState(window.innerWidth > 768);
   const [requestQueue, setRequestQueue] = useState([]);
   const [filterCommon, setFilterCommon] = useState(false);
+  const [filterRomaji, setFilterRomaji] = useState(false);
   const [displayCardHolder, setDisplayCardHolder] = useState("");
   const lastRequestItem = useRef('');
 
@@ -272,6 +273,10 @@ function App() {
 
   const handleRequest =  (request) => {
     setBlur("blur");
+    request = request.toLowerCase();
+    if(!filterRomaji){
+      request = `"${request}"`;
+    }
     axios.get(API_JISHO + (filterCommon ? 'common/':'') + request).then((response) => {
       if (lastRequestItem.current !== request) return;
 
@@ -484,9 +489,15 @@ function App() {
               className="search-bar"
               onChange={handleInputChange}
             />
-            <div className="filter">
-              <input type={"checkbox"} onChange={() => setFilterCommon(!filterCommon)} />
-              <label>Filter common words</label>
+            <div className="filter-container" >
+              <div className="filter">
+                <input type={"checkbox"} onChange={() => setFilterCommon(!filterCommon)} />
+                <label>Filter common words</label>
+              </div>
+              <div className="filter">
+                <input type={"checkbox"} onChange={() => setFilterRomaji(!filterRomaji)} />
+                <label>Use rōmaji as hiragana</label>
+              </div>
             </div>
           </div>
         </div>
