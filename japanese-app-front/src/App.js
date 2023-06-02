@@ -380,7 +380,9 @@ function App() {
   return (
     <div className="App">
 
-      <DonationLink onClick={setDisplayDonation.bind(this, true)}>made with love from Japan, hosted in France - consider helping ❤️</DonationLink>
+      <DonationLink onClick={
+        () => {window.open("https://buy.stripe.com/dR64hg8vLg0x28EbII", "_blank");}
+      }>made with love in Japan, hosted in France - consider helping ❤️</DonationLink>
       
       {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}
       {loading && <LoadingScreenComponent />}
