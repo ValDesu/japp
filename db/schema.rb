@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_26_055341) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_03_055314) do
   create_table "cards", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -33,6 +33,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_055341) do
     t.datetime "updated_at", null: false
     t.integer "done", default: 0
     t.integer "likes", default: 0
+    t.string "author"
     t.index ["name"], name: "index_decks_on_name", unique: true
   end
 

@@ -303,9 +303,7 @@ function App() {
     handleRequest(searchRequest);
   }, [filterRomaji]);
 
-  useEffect(() => {
-    console.log(savedCards);
-    
+  useEffect(() => {    
     if(savedCards.length > 0){
       setDisplayNotification("");
     }else{
@@ -390,7 +388,7 @@ function App() {
       if(response === -1){
         console.error("Error while creating deck");
         //Display error message
-        displayFlashMessageHandler("Error while creating deck: name not unique", "error");
+        displayFlashMessageHandler("Deck can not be created or name not unique", "error");
         return;
       };
 
@@ -405,16 +403,15 @@ function App() {
   };
 
   const createDeck = async (name, password) => {
-    try {
-      const response = await axios.post(API_DECKS, { name, password, cards: savedCards});
+      const user_ip = await axios.get("https://api4.my-ip.io/ip.json").catch((e) => {
+        console.error("Cannot access IP endpoint.");
+      });
+      const response = await axios.post(API_DECKS, { name, password, cards: savedCards, author: user_ip ? user_ip.data.ip : null}).catch((error) => {
+        console.error(error);
+        return -1;
+      });
       return response.data;
-    } catch (error) {
-      console.error(error);
-      return -1;
-    }
   };
-
-
 
   return (
     <div className="App">
