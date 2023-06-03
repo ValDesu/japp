@@ -19,7 +19,7 @@ import DonationComponent from "./components/DonationComponent";
 import WarningSaveIPComponent from "./components/WarningSaveIPComponent";
 
 import ReactGA from 'react-ga';
-ReactGA.initialize(process.env.REACT_APP_GA_ID, {debug: true});
+ReactGA.initialize(process.env.REACT_APP_GA_ID);
 
 const API_JISHO   = process.env.REACT_APP_API_JISHO;
 const API_DECKS   = process.env.REACT_APP_API_DECKS;
