@@ -18,6 +18,9 @@ import SentencesComponent from "./components/SentencesComponent";
 import DonationComponent from "./components/DonationComponent";
 import WarningSaveIPComponent from "./components/WarningSaveIPComponent";
 
+import ReactGA from 'react-ga';
+ReactGA.initialize(process.env.REACT_APP_GA_ID, {debug: true});
+
 const API_JISHO   = process.env.REACT_APP_API_JISHO;
 const API_DECKS   = process.env.REACT_APP_API_DECKS;
 const API_IP      = process.env.REACT_APP_API_IP;
@@ -81,6 +84,10 @@ function App() {
   useEffect(() => {
     if (timer === 0){
       setDisplayDonation(true);
+      ReactGA.event({
+        category: 'Donation',
+        action: 'Display donation modal after 5 minutes'
+      });
       return;
     }
     const interval = setInterval(() => {
@@ -109,6 +116,10 @@ function App() {
     if (displayFlashMessage) {
       setTimeout(() => {
         setDisplayFlashMessage(false);
+        ReactGA.event({
+          category: 'Alert',
+          action: 'Display flash message'
+        });
       }, 7000);
     }
   }, [displayFlashMessage]);
@@ -122,8 +133,11 @@ function App() {
   const onClickTwitterSentence = ({slug}) => {
     setDisplayExample(true);
     setSentenceSlug(slug);
+    ReactGA.event({
+      category: 'Dictionary',
+      action: 'Display sentence example'
+    });
     return;
-    
   };
 
   //Search states
@@ -180,9 +194,17 @@ function App() {
       setDisplayModalDeckList(false);
       setDisplayModalReviewFlashcardsSetting(false);
       setIsReviewing(true);
+      ReactGA.event({
+        category: 'Review',
+        action: 'Start review'
+      });
     }).catch((error) => {
       console.log(error.response.data.error);
       displayFlashMessageHandler(error.response.data.error, "error");
+      ReactGA.event({
+        category: 'Review',
+        action: 'Error starting review'
+      });
     }).finally(() => {
       setLoading(false);
     });
@@ -201,6 +223,10 @@ function App() {
     }).finally(() => {
       setLoading(false);
       setIsReviewing(false);
+      ReactGA.event({
+        category: 'Review',
+        action: 'Finish review'
+      });
     });
   };
 
@@ -209,6 +235,10 @@ function App() {
     setDisplayCardHolder("");
     setReviewCards([]);
     setReviewSetting(new IReviewSetting());
+    ReactGA.event({
+      category: 'Review',
+      action: 'Close review'
+    });
   };
 
 
@@ -229,6 +259,10 @@ function App() {
       setDecks(response.data);
       console.log(response.data);
     });
+    ReactGA.event({
+      category: 'Deck',
+      action: 'Display deck list'
+    });
   };
 
   const onDeckEdit = ({name = null, password = null}) => {
@@ -242,9 +276,17 @@ function App() {
 
       setDisplayModalEdit(false);
       displayFlashMessageHandler("Deck loaded successfully !", "success");
+      ReactGA.event({
+        category: 'Deck',
+        action: 'Edit deck'
+      });
     }).catch((error) => {
       console.log(error.response.data.error);
       displayFlashMessageHandler(error.response.data.error, "error");
+      ReactGA.event({
+        category: 'Deck',
+        action: 'Error editing deck'
+      });
     }).finally(() => {
       setLoading(false);
     });
@@ -260,6 +302,10 @@ function App() {
     }
 
     setSavedCards((cards) => [...cards, card]);
+    ReactGA.event({
+      category: 'Dictionary',
+      action: 'Bookmark card'
+    });
   };
 
   const onRemoveCardFromModal = (btn) => {
@@ -272,6 +318,11 @@ function App() {
   };
 
   const handleRequest =  (request) => {
+    ReactGA.event({
+      category: 'Dictionary',
+      action: 'Search word',
+      value: request
+    });
     setBlur("blur");
     request = request.toLowerCase();
     if(!filterRomaji){
@@ -295,13 +346,20 @@ function App() {
       });
   };
 
-  useEffect(() => {
-    handleRequest(searchRequest);
-  }, [filterCommon]);
+  const prevFilterCommon = useRef();
+  const prevFilterRomaji = useRef();
 
   useEffect(() => {
-    handleRequest(searchRequest);
-  }, [filterRomaji]);
+    if (
+      (prevFilterCommon.current !== undefined && prevFilterCommon.current !== filterCommon) ||
+      (prevFilterRomaji.current !== undefined && prevFilterRomaji.current !== filterRomaji)
+    ) {
+      handleRequest(searchRequest);
+    }
+
+    prevFilterCommon.current = filterCommon;
+    prevFilterRomaji.current = filterRomaji;
+  }, [filterCommon, filterRomaji]);
 
   useEffect(() => {    
     if(savedCards.length > 0){
@@ -357,9 +415,17 @@ function App() {
     ).then((response) => {
       console.log(response.data);
       displayFlashMessageHandler("Deck deleted successfully !", "success");
+      ReactGA.event({
+        category: 'Deck',
+        action: 'Delete deck'
+      });
     }).catch((error) => {
       console.log(error.response.data.error);
       displayFlashMessageHandler(error.response.data.error, "error");
+      ReactGA.event({
+        category: 'Deck',
+        action: 'Error deleting deck'
+      });
     }).finally(() => {
       setDisplayModalNewDeck(false);
       setDisplayModalEdit(false);
@@ -389,6 +455,10 @@ function App() {
         console.error("Error while creating deck");
         //Display error message
         displayFlashMessageHandler("Deck can not be created or name not unique", "error");
+        ReactGA.event({
+          category: 'Deck',
+          action: 'Error creating deck'
+        });
         return;
       };
 
@@ -397,6 +467,10 @@ function App() {
       displayFlashMessageHandler("Deck created successfully", "success");
       setSavedCards([]);
       setDisplayModalNewDeck(false);
+      ReactGA.event({
+        category: 'Deck',
+        action: 'Create deck'
+      });
 
       console.log(response.id);
     });
@@ -417,7 +491,13 @@ function App() {
     <div className="App">
 
       <DonationLink onClick={
-        () => {window.open("https://buy.stripe.com/dR64hg8vLg0x28EbII", "_blank");}
+        () => {
+          ReactGA.event({
+            category: 'Donation',
+            action: 'Clicked on donation link'
+          });
+          window.open("https://buy.stripe.com/dR64hg8vLg0x28EbII", "_blank");
+        }
       }>made with love in Japan, hosted in France - consider helping ❤️</DonationLink>
       
       {displayFlashMessage && <FlashMessageComponent message={flashMessage} type={flashMessageType} />}

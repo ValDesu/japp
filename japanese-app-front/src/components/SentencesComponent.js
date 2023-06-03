@@ -4,7 +4,7 @@ import axios from "axios";
 
 const SentenceHolder = styled.div`
     position: absolute;
-    bottom: ${props => props.display ? '1rem' : '-150%'};
+    bottom: ${props => props.display === 'true' ? '1rem' : '-150%'};
     width: 50%;
     height: auto;
     background-color: #fff;
@@ -193,7 +193,6 @@ const SentencesComponent = ({display, slug, isVertical, onClose, apiTwitter}) =>
 
 
     useEffect(() => {
-        console.log(slug);
         if(slug === "") {
             return;
         }
@@ -204,7 +203,7 @@ const SentencesComponent = ({display, slug, isVertical, onClose, apiTwitter}) =>
 
     return (
         <>
-        <SentenceHolder display={display} isVertical={isVertical}>
+        <SentenceHolder display={`${display}`} isVertical={isVertical}>
             {isLoading ?
              <Spinner />
              : 

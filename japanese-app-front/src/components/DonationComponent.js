@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import ReactGA from "react-ga";
 
 const ModalContainer = styled.div`
     display: ${props => props.isOpen ? 'flex' : 'none'};
@@ -35,7 +36,7 @@ const ModalContent = styled.div`
     }
 `;
 
-const DonationButton = styled.a`
+const DonationButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -46,6 +47,7 @@ const DonationButton = styled.a`
     margin: 0.5rem 0;
     text-decoration: none;
     color: #000;
+    width: 100%;
 
     font-size: 1.2rem;
     cursor: pointer;
@@ -110,7 +112,15 @@ const DonationComponent = ({ isOpen, onClose }) => {
                 <DonationTextWarning>🛑This message will only display one time so it doesn't bother you while you study !</DonationTextWarning>
                 <DonationText>This app is free to use, but it costs me money to keep it running.</DonationText>
                 <DonationText>If you like it, please consider donating to help me improve it and add new features !</DonationText>
-                <DonationButton href="https://buy.stripe.com/dR64hg8vLg0x28EbII" target="_blank">Donate<DonationTextItalic>(don't do if you can't)</DonationTextItalic></DonationButton>
+                <DonationButton onClick={
+                    () => {
+                    ReactGA.event({
+                        category: 'Donation',
+                        action: 'Clicked on donation link via modal'
+                    });
+                    window.open("https://buy.stripe.com/dR64hg8vLg0x28EbII", "_blank");
+                    }
+                }>Donate<DonationTextItalic>(don't do if you can't)</DonationTextItalic></DonationButton>
             </ModalContent>
         </ModalContainer>
     )
