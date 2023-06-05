@@ -218,6 +218,14 @@ class Api::V1::DecksController < ApplicationController
     end
   end
 
+  #GET /decks/autofind
+  def autofind
+    #find all decks with author = params[:ip]
+    @decks = Deck.where(author: params[:ip])
+    #return json with decks name and password
+    render json: @decks.to_json(only: [:name, :password]), status: :ok
+  end 
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_deck

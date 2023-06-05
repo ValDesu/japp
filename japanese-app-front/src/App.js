@@ -533,6 +533,9 @@ function App() {
         isOpen={displayModalEdit}
         onClose={setDisplayModalEdit.bind(this, false)}
         onEdit={onDeckEdit}
+        loadingCallback={(c) => {setLoading(c)}}
+        flashCallback={(m, t) => {displayFlashMessageHandler(m, t)}}
+        API_DECKS={API_DECKS}
       />
 
       <ModalDeckList

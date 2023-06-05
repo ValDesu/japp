@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       put '/decks/update', to: 'decks#update'
       get '/decks/edit', to: 'decks#edit'
       get '/decks/search', to: 'decks#search'
+      get '/decks/autofind', to: 'decks#autofind'
       post '/decks', to: 'decks#create'
       delete '/decks', to: 'decks#destroy'
 
