@@ -24,7 +24,10 @@ const SentenceHolder = styled.div`
         margin-right: auto;
         width: 80%;
         z-index: 10;
-        ` : ''
+        ` : 
+        `
+        width: 95%;
+        `
         }
     }
 
@@ -134,8 +137,9 @@ const SwitchToReadingButton = styled.div`
     }
 `;
 
+const API_TWITTER = process.env.REACT_APP_API_TWITTER;
 
-const SentencesComponent = ({display, slug, isVertical, onClose, apiTwitter}) => {
+const SentencesComponent = ({display, slug, isVertical, onClose}) => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [sentence, setSentence] = useState("");
@@ -153,7 +157,7 @@ const SentencesComponent = ({display, slug, isVertical, onClose, apiTwitter}) =>
     };
 
     const getSentence = (slug) => {
-        axios.post(apiTwitter + "retrieve/", {word: slug}).then((res) => {
+        axios.post(API_TWITTER + "retrieve/", {word: slug}).then((res) => {
             console.log(res.data);
             //verify if there is a sentence
             if(res.data.sentences.length === 0) {

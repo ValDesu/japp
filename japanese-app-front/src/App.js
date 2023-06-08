@@ -24,7 +24,7 @@ ReactGA.initialize(process.env.REACT_APP_GA_ID);
 const API_JISHO   = process.env.REACT_APP_API_JISHO;
 const API_DECKS   = process.env.REACT_APP_API_DECKS;
 const API_IP      = process.env.REACT_APP_API_IP;
-const API_TWITTER = process.env.REACT_APP_API_TWITTER;
+
 
 class ICard {
   constructor(
@@ -593,7 +593,6 @@ function App() {
           slug={sentenceSlug}
           isVertical={isVertical}
           onClose={() => {setDisplayExample(false)}}
-          apiTwitter={API_TWITTER}
         />
           <div className={`container has-text-centered ${isVertical ? "mobile-vertical-display" : ""}`}>
             <img src={logo} alt="logo" className="logo" />

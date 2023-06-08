@@ -397,18 +397,14 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
     const second = Math.floor((timeClock % 6000) / 100);
 
     useEffect(() => {
-        if (isInitialMount.current) {
-            console.log(reviewSetting);
-          isInitialMount.current = false;
-        } else {
-          const updatedToReviewCards = cards.map((element) => {
+        const updatedToReviewCards = cards.map((element) => {
             const cardReviewSlug = new ICardReview(element, 0, 'slug', true);
             const cardReviewMeaning = new ICardReview(element, 0, 'meaning', true);
             return [cardReviewSlug, cardReviewMeaning];
-          }).flat();
-          setToReviewCards(updatedToReviewCards.sort(() => Math.random() - 0.5));
-          setSetupFinished(true);
-        }
+        }).flat();
+        setToReviewCards(updatedToReviewCards.sort(() => Math.random() - 0.5));
+        setSetupFinished(true);
+    
       }, [cards]);
 
     const handleShowAnswer = () => {
