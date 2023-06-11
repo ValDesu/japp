@@ -500,7 +500,7 @@ const ReviewModalComponent = ({reviewSetting, cards, onClose, onCloseFinished}) 
                         width={window.innerWidth}
                         height={window.innerHeight}
                         recycle={false}
-                        gravity={0.2}
+                        gravity={0.08}
                         />
                         : null
                     }

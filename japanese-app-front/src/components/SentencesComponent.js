@@ -157,6 +157,7 @@ const SentencesComponent = ({display, slug, isVertical, onClose}) => {
     };
 
     const getSentence = (slug) => {
+        setDisplayReading(false);
         axios.post(API_TWITTER + "retrieve/", {word: slug}).then((res) => {
             console.log(res.data);
             //verify if there is a sentence

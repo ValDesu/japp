@@ -223,6 +223,7 @@ function App() {
     }).finally(() => {
       setLoading(false);
       setIsReviewing(false);
+      setDisplayCardHolder("");
       ReactGA.event({
         category: 'Review',
         action: 'Finish review'

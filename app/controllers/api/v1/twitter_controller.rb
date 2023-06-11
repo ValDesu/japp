@@ -81,9 +81,12 @@ class Api::V1::TwitterController < ApplicationController
           # Send the API request
           response = conn.get do |req|
             req.params['from'] = 'ja'
-            req.params['to'] = 'en'
+            req.params['trans_to'] = 'en'
             req.params['query'] = params[:word]
             req.params['sort'] = 'random'
+            req.params['orphans'] = 'no'
+            req.params['trans_filter'] = 'limit'
+            req.params['trans_link'] = 'direct'
           end
 
         puts "sending request"
@@ -93,13 +96,19 @@ class Api::V1::TwitterController < ApplicationController
             sentences = JSON.parse(response.body)['results']
             # filter sentences where lang = "jpn"
             begin
-                sentences = sentences.select! {|sentence| sentence['lang'] == 'jpn'}
+                sentences.select! {|sentence| sentence['text'].include? params[:word]}
+                sentences.select! {|sentence| sentence['lang'] == 'jpn'}
                 # TODO: receive lang as parameter
                 # filter where at least one sentences[translations][0] is lang = "eng"
-                sentences = sentences.select! {|sentence| sentence['translations'][0].select! {|translation| translation['lang'] == 'eng'}}
-                render json: {sentences: sentences.sample(1), from_twitter: false}
+                sentences.select! {|sentence| sentence['translations'][0].select! {|translation| translation['lang'] == 'eng'}}
+                sentences.select! {|sentence| sentence['translations'][1].select! {|translation| translation['lang'] == 'eng'}}
+                
+                sentences.each {|sentence| sentence['translations'].delete([])}
+                sentences.select! {|sentence| sentence['translations'].length > 0}
+
+                render json: {sentences: sentences.sample(1), from_twitter: false, rescue: false}
             rescue
-                render json: {sentences: [], from_twitter: false}
+                render json: {sentences: [], from_twitter: false, rescue: true}
             end
         else
             puts "failure"
