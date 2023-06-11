@@ -90,8 +90,17 @@ class Api::V1::TwitterController < ApplicationController
         if response.status == 200
             puts "success"
             # Parse the JSON response
-            #TODO : Check the sample to ensure there is an japanese sentence and english translation
-            render json: {sentences: JSON.parse(response.body)['results'].sample(1), from_twitter: false}
+            sentences = JSON.parse(response.body)['results']
+            # filter sentences where lang = "jpn"
+            begin
+                sentences = sentences.select! {|sentence| sentence['lang'] == 'jpn'}
+                # TODO: receive lang as parameter
+                # filter where at least one sentences[translations][0] is lang = "eng"
+                sentences = sentences.select! {|sentence| sentence['translations'][0].select! {|translation| translation['lang'] == 'eng'}}
+                render json: {sentences: sentences.sample(1), from_twitter: false}
+            rescue
+                render json: {sentences: [], from_twitter: false}
+            end
         else
             puts "failure"
             # Handle the API request failure

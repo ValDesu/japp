@@ -45,7 +45,7 @@ const Sentence = styled.p`
 
 `;
 
-const SentenceTranslation = styled.p`
+const SentenceTranslation = styled.div`
     font-size: .9rem;
     margin-left: .2rem;
     margin-top: -10px;
@@ -163,14 +163,7 @@ const SentencesComponent = ({display, slug, isVertical, onClose}) => {
             if(res.data.sentences.length === 0) {
                 setSentence("No sentence found 😿");
                 setSentenceTranslation("Try using the twitter button and find real life examples !");
-                setIsLoading(false);
-                return;
-            }
-
-            //verify sentence is japanese
-            if(res.data.sentences[0].lang !== "jpn") {
-                setSentence("No japanese sentence found 😿");
-                setSentenceTranslation("Try using the twitter button and find real life examples !");
+                setSentenceReading("");
                 setIsLoading(false);
                 return;
             }
@@ -183,7 +176,6 @@ const SentencesComponent = ({display, slug, isVertical, onClose}) => {
                 return;
             }
 
-            //verifu
             setSentence(highlightWord(res.data.sentences[0].text, slug));
             setSentenceTranslation(res.data.sentences[0].translations[0].filter((word) => word.lang === "eng")[0].text);
             setSentenceReading(res.data.sentences[0].transcriptions[0].text);
