@@ -54,7 +54,7 @@ const BubbleNotification = styled.div`
   height: 3rem;
   text-align: center;
 
-  animation: bubblePop 0.5s ease-in-out;
+  animation: bubblePop 1s ease-in-out;
 
   //adapt to mobile
     @media (max-width: 907px) {
@@ -98,7 +98,7 @@ const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList
             <BubbleText>✒️</BubbleText>
         </BubbleMenu>
 
-        <MenuItemComponent display={displayItems}
+        <MenuItemComponent display={displayItems} displayNotification={displayNotification}
             btnFunction={OnClickMenuItemsAndHide.bind(this, onCreateNewDeck)}
             text={!isEditing ? "Create new deck" : "Update deck"}
             bottom={0}
@@ -110,12 +110,18 @@ const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList
             bottom={1}
         />
 
-        {!isEditing &&
-        <MenuItemComponent display={displayItems}
+
+        <MenuItemComponent display={displayItems && !isEditing}
             btnFunction={OnClickMenuItemsAndHide.bind(this, onEdit)}
             text={"Edit my decks"}
             bottom={2}
-        />}
+        />
+
+        <MenuItemComponent disabled="true" display={displayItems && !isEditing}
+                    btnFunction={null}
+                    text={"Mini games"}
+                    bottom={3}
+                />
         </>
          
     );

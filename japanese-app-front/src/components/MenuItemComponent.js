@@ -6,7 +6,8 @@ const BubbleMenuItem = styled.div`
   height: 3rem;
   border-radius: 5rem;
   z-index: 5;
-  background-color: #33e699;
+  background-color: ${props => props.disabled === 'true' ? '#b3b3b3' : '#33e699'};
+  opacity: ${props => props.disabled === 'true' ? '0.5' : '1'};
   color: #36383c;
   align-items:center;
   justify-content: right;
@@ -54,11 +55,40 @@ const BubbleMenuItemText = styled.span`
     }
 `;
 
+const BubbleNotification = styled.div`
+  display: ${props => props.displayNotification};
+  position:absolute;
+  top: .5rem;
+  left: .5rem;
+  font-size: .8rem;
+  color: black;
+  padding: 0.3rem;
+  background-color: white;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
 
-const MenuItemComponent = ({ text, bottom, display, btnFunction }) => {
+  animation: bubblePop 1s ease-in-out;
+
+  //adapt to mobile
+    @media (max-width: 907px) {
+        top: .5rem;
+        left: .25rem;
+        width: 1rem;
+        height: 1rem;
+        font-size: .4rem;
+        padding: 0.2rem;
+    }
+`;
+
+
+
+const MenuItemComponent = ({ text, bottom, display, btnFunction, displayNotification = "none", disabled="false" }) => {
   return (
-    <BubbleMenuItem bottom={bottom} displayItems={display} delay={bottom/12} onClick={btnFunction}>
+    <BubbleMenuItem disabled={disabled} bottom={bottom} displayItems={display} delay={bottom/12} onClick={btnFunction}>
         <BubbleMenuItemText>{text}</BubbleMenuItemText>
+        <BubbleNotification displayNotification={displayNotification}>🔔</BubbleNotification>
     </BubbleMenuItem>
   );
 };

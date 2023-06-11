@@ -362,7 +362,7 @@ function App() {
   }, [filterCommon, filterRomaji]);
 
   useEffect(() => {    
-    if(savedCards.length > 0){
+    if(savedCards.length >= 5){
       setDisplayNotification("");
     }else{
       setDisplayNotification("none");
