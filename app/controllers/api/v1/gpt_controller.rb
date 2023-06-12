@@ -12,6 +12,8 @@ class Api::V1::GptController < ApplicationController
         response = conn.post do |req|
             req.body = {
                 model: "gpt-3.5-turbo",
+                temperature: 0.9,
+                max_tokens: 255,
                 messages: [
                     {
                         "role": "system",
@@ -19,17 +21,17 @@ class Api::V1::GptController < ApplicationController
                     },
                     {
                         "role": "user",
-                        "content": `This english sentence "Hello, my name is Tom" has been translated by a student in japanese as "こんにちは、私はトムです".
+                        "content": """This english sentence \"Hello, my name is Tom\" has been translated by a student in japanese as \"こんにちは、私はトムです\".
                         Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
                         [{
-                          "grade": "x/10",
-                          "source_phrase": "the phrase to be translated",
-                          "proposed_correction":"your own translation",
-                          "proposed_correction_hiragana":"the proposed correction using furigana for easy kanji reading"
-                          "advice_grammar":"advice about the grammar used in japanese translation",
-                          "advice_general": "a general advice for the student to do better next time"
+                            \"grade\": \"x/10\",
+                            \"source_phrase\": \"the phrase to be translated\",
+                            \"proposed_correction\":\"your own translation\",
+                            \"proposed_correction_hiragana\":\"the proposed correction using furigana for easy kanji reading\"
+                            \"advice_grammar\":\"advice about the grammar used in japanese translation\",
+                            \"advice_general\": \"a general advice for the student to do better next time\"
                         }]
-                        The JSON response:`
+                        The JSON response:"""
                     }]
                 }.to_json
         end
