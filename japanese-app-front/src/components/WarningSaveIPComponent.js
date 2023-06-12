@@ -72,6 +72,19 @@ const ModalStartButton = styled.button`
     cursor: ${props => props.disabled ? "not-allowed" : "pointer"};
 `;
 
+const ModalTestButton = styled.button`
+    background-color: rgb(180, 180, 180);
+    border: none;
+    border-radius: 9999px;
+    color: #333;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+`;
+
 const ModalWarningText = styled.p`
     font-size: 1rem;
     margin-bottom: 1rem;
@@ -89,6 +102,7 @@ const SpanWaitingTime = styled.span`
     color: rgb(51, 230, 153);
 `;
 
+const API_GPT     = process.env.REACT_APP_API_GPT;
 
 const WarningSaveIPComponent = ({onClose, onStart, loadingCallback, API_URL}) => {
 
@@ -132,6 +146,17 @@ const WarningSaveIPComponent = ({onClose, onStart, loadingCallback, API_URL}) =>
         });
     };
 
+    const testButtonHandler = () => {
+        loadingCallback(true);
+        axios.get(`${API_GPT}test`).then((response) => {
+            console.log(response.data);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            loadingCallback(false);
+        });
+    };
+
     useEffect(() => {
         if(initialRender.current) {
             checkForFreeTry();
@@ -168,6 +193,7 @@ const WarningSaveIPComponent = ({onClose, onStart, loadingCallback, API_URL}) =>
                 {
                     isFreeTry && <ModalStartButton disabled={false} onClick={startButtonHandler}>I'm ok with storing my IP (soon)</ModalStartButton>
                 }
+                <ModalTestButton onClick={testButtonHandler}>Test AI configuration</ModalTestButton>
             </ModalContent>
         </ModalContainer>
     </>
