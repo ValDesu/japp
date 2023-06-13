@@ -27,7 +27,7 @@ class Api::V1::GptController < ApplicationController
                             \"grade\": \"x/10\",
                             \"source_phrase\": \"the phrase to be translated\",
                             \"proposed_correction\":\"your own translation\",
-                            \"proposed_correction_hiragana\":\"the proposed correction using furigana for easy kanji reading\"
+                            \"proposed_correction_hiragana\":\"the proposed correction using spacing and hiraganas next to kanjis for easy reading, like : 私(わたし)\"
                             \"advice_grammar\":\"advice about the grammar used in japanese translation\",
                             \"advice_general\": \"a general advice for the student to do better next time\"
                         }]
@@ -46,4 +46,7 @@ class Api::V1::GptController < ApplicationController
             render json: response
         end
     end
+
+
+
 end

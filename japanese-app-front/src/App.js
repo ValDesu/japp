@@ -19,6 +19,7 @@ import DonationComponent from "./components/DonationComponent";
 import WarningSaveIPComponent from "./components/WarningSaveIPComponent";
 
 import ReactGA from 'react-ga';
+import ReviewGPTComponent from "./components/ReviewGPTComponent";
 ReactGA.initialize(process.env.REACT_APP_GA_ID);
 
 const API_JISHO   = process.env.REACT_APP_API_JISHO;
@@ -510,6 +511,9 @@ function App() {
         reviewSetting={reviewSetting} 
         cards={reviewCards}
       />}
+
+      <ReviewGPTComponent/>
+
       {displayWarningFreeTry && 
         <WarningSaveIPComponent
           onClose={setDisplayWarningFreeTry.bind(this, false)}
