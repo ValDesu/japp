@@ -104,7 +104,7 @@ const SpanWaitingTime = styled.span`
 
 const API_GPT     = process.env.REACT_APP_API_GPT;
 
-const WarningSaveIPComponent = ({onClose, onStart, loadingCallback, API_URL}) => {
+const WarningSaveIPComponent = ({onClose, loadingCallback, displayExercicesCallback, API_URL}) => {
 
     const [isFreeTry, setIsFreeTry] = useState(false);
     const [userIPAddress, setUserIPAddress] = useState("");
@@ -115,7 +115,7 @@ const WarningSaveIPComponent = ({onClose, onStart, loadingCallback, API_URL}) =>
         loadingCallback(true);
         axios.post(`${API_URL}register_ip`, {'ip': userIPAddress}).then((response) => {
             console.log(response.data);
-            
+            displayExercicesCallback();
         }).catch((error) => {
             console.log('error', error);
             
@@ -136,6 +136,7 @@ const WarningSaveIPComponent = ({onClose, onStart, loadingCallback, API_URL}) =>
                 setIsFreeTry(response.data.free_try);
                 setWaitingTime(response.data.waiting_time);
                 loadingCallback(false);
+
             }).catch((error) => {
                 console.log(error);
                 onClose();
@@ -169,7 +170,7 @@ const WarningSaveIPComponent = ({onClose, onStart, loadingCallback, API_URL}) =>
         <ModalContainer>
             <ModalContent>
                 <ModalHeader>
-                    <ModalTitle>Warning (not available yet)</ModalTitle>
+                    <ModalTitle>Warning</ModalTitle>
                     <ModalCloseButton onClick={onClose}>❌</ModalCloseButton>
                 </ModalHeader>
                 <ModalWarningText>
@@ -191,7 +192,7 @@ const WarningSaveIPComponent = ({onClose, onStart, loadingCallback, API_URL}) =>
                     Your IP address: {userIPAddress}
                 </ModalIPAdressSpan>
                 {
-                    isFreeTry && <ModalStartButton disabled={false} onClick={startButtonHandler}>I'm ok with storing my IP (soon)</ModalStartButton>
+                    isFreeTry && <ModalStartButton disabled={false} onClick={startButtonHandler}>I'm ok with storing my IP</ModalStartButton>
                 }
                 <ModalTestButton onClick={testButtonHandler}>Test AI configuration</ModalTestButton>
             </ModalContent>

@@ -174,16 +174,14 @@ function App() {
   const onStartReview = (reviewSetting) => {
   
     setDisplayExample(false);
-    setDisplayCardHolder("card-holder-hidden");
     setLoading(true)
     setReviewSetting(reviewSetting);
 
     if(reviewSetting.reviewExercice === "3"){
       //state display warning free try
       setDisplayWarningFreeTry(true);
-      setDisplayModalDeckList(false);
-      setDisplayModalReviewFlashcardsSetting(false);
-      return;
+    }else{
+      setDisplayCardHolder("card-holder-hidden");
     }
 
     ;
@@ -194,11 +192,17 @@ function App() {
       setReviewCards(response.data);
       setDisplayModalDeckList(false);
       setDisplayModalReviewFlashcardsSetting(false);
-      setIsReviewing(true);
+
+      if(reviewSetting.reviewExercice !== "3"){
+        setIsReviewing(true);
+      }
+      
       ReactGA.event({
         category: 'Review',
-        action: 'Start review'
+        action: 'Start review',
+        value: reviewSetting.reviewExercice
       });
+      
     }).catch((error) => {
       console.log(error.response.data.error);
       displayFlashMessageHandler(error.response.data.error, "error");
@@ -252,6 +256,7 @@ function App() {
 
   //Review flashcards states
   const [displayModalReviewFlashcardsSetting, setDisplayModalReviewFlashcardsSetting] = useState(false);
+  const [displayModalReviewGPT, setDisplayModalReviewGPT] = useState(false);
 
   const displayModalDeckListHandler = ({name = "", page = 0}) => {
     setDisplayModalDeckList(true);
@@ -512,12 +517,18 @@ function App() {
         cards={reviewCards}
       />}
 
-      <ReviewGPTComponent/>
+      {displayModalReviewGPT && 
+      <ReviewGPTComponent
+        onClose={setDisplayModalReviewGPT.bind(this, false)}
+        cards={reviewCards}
+      />
+      }
+      
 
       {displayWarningFreeTry && 
         <WarningSaveIPComponent
-          onClose={setDisplayWarningFreeTry.bind(this, false)}
-          onStart={null}
+          onClose={() => {setDisplayWarningFreeTry(false)}}
+          displayExercicesCallback={() => {setDisplayModalReviewGPT(true)}}
           API_URL={API_IP}
           loadingCallback={(c) => {setLoading(c)}}
         />

@@ -206,7 +206,7 @@ const ReviewFlashcardsSettingComponent = ({isOpen, onClose, onStart}) => {
                     }>
                         <option value="1">Just flashcards</option>
                         <option value="2">Flashcards and typing</option>
-                        <option value="3">AI output exercices (soon)</option>
+                        <option value="3">🤖 AI output exercices</option>
                     </ModalReviewModeSelectInput>
                 </ModalSelectAndLabelContainer>
 

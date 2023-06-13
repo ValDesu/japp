@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import { useEffect, useState } from "react";
+import axios from 'axios';
 
 
 const SpinAnimation = keyframes`
@@ -234,7 +235,6 @@ const TanguEmoji = styled.div`
 const HighlightWord = styled.span`
     background-color: #85ffcb;
     color: #3a3d40;
-    font-size: 1rem;
 
     padding: 0 .5rem;
     border-radius: 5px;
@@ -285,11 +285,49 @@ const ModalButtonSend = styled.button`
     }
 `;
 
-const ReviewGPTComponent = () => {
+const SentenceDifficulty = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    const [isLoading, setIsLoading] = useState(false);
+    border: none;
+    width: 100%;
+    color: rgba(255, 255, 255, 0.6);
 
-    const highlightWords = (input, words) => {
+    font-size: 1rem;
+    font-style: italic;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+
+    }
+`;
+
+
+const API_GPT = process.env.REACT_APP_API_GPT;
+
+const ReviewGPTComponent = ({cards, onClose, callBackFlashMessage}) => {
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [cardsToReview, setCardsToReview] = useState([]);
+    const [sentence, setSentence] = useState("");
+    const [sentenceReading, setSentenceReading] = useState("");
+    const [difficulty, setDifficulty] = useState("");
+    const [sentenceTranslation, setSentenceTranslation] = useState("");
+    const [questionNumber, setQuestionNumber] = useState(0);
+
+    const selectRandomCards = (cards, number = 4) => {
+        let availableCards = cards;
+        let randomCards = [];
+        for (let i = 0; i < number; i++) {
+            let randomIndex = Math.floor(Math.random() * availableCards.length);
+            randomCards.push(availableCards[randomIndex]);
+            availableCards.splice(randomIndex, 1);
+        }
+        return randomCards;
+    };
+
+    const highlightWords = (input = "", words) => {
         const regex = new RegExp(`(${words.join('|')})`, 'gi');
         const parts = input.split(regex);
       
@@ -298,9 +336,37 @@ const ReviewGPTComponent = () => {
         ); 
     };
 
+    const generateSentenceGPT = (rcards) => {
+        axios.post(`${API_GPT}generate/japanese/`, {cards: rcards}).then((response) => {
+            //setSentence(response.data.sentence);
+            let response_gpt = JSON.parse(response.data.choices[0].message.content)[0];
+
+            setSentence(response_gpt.japanese_sentence);
+            setSentenceReading(response_gpt.japanese_sentence_hiragana);
+            setDifficulty(response_gpt.sentence_difficulty);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            setIsLoading(false);
+        });
+    };
+
+    useEffect(() => {
+        console.log(cards);
+        let rcards = selectRandomCards(cards.map(card => card.slug));
+        setCardsToReview(rcards);
+    }, []);
+
+    useEffect(() => {
+        if (cardsToReview.length > 0) {
+            generateSentenceGPT(cardsToReview);
+        }
+    }, [cardsToReview]);
+    
+
     return(
         <ModalContainer>
-            <ExitButtonModal>❌</ExitButtonModal>
+            <ExitButtonModal onClick={onClose}>❌</ExitButtonModal>
             <ModalContentBorder>
                 <ModalContent>
                     {isLoading ? 
@@ -311,22 +377,24 @@ const ReviewGPTComponent = () => {
                     :
                     <>
                     <ProgressBar>
-                        <Progress status={"correct"} progress={35}/>
+                        <Progress status={"correct"} progress={(questionNumber/10)*100}/>
                     </ProgressBar>
                     <ModalWordsContainer>
-                        <WordsSelectedPill>猫</WordsSelectedPill>
-                        <WordsSelectedPill>犬</WordsSelectedPill>
-                        <WordsSelectedPill>鳥</WordsSelectedPill>
-                        <WordsSelectedPill>海</WordsSelectedPill>
+                        {cardsToReview.map((card, index) => {
+                            return (
+                                <WordsSelectedPill key={index}>{card}</WordsSelectedPill>
+                            )
+                        })}
                     </ModalWordsContainer>
                     <ModalSentenceContainer>
                         <EmojiSelectedPill backgroundColor={'white'}>
                             <RobotEmoji position={"relative"}>🤖</RobotEmoji>
                         </EmojiSelectedPill>
                         <SentenceSelectedPill>
-                            {highlightWords('海で猫は犬よりも鳥が好きです。', ['猫', '犬', '鳥', '海'])}
+                            {highlightWords(sentence, cardsToReview)}
                         </SentenceSelectedPill>
                     </ModalSentenceContainer>
+                    <SentenceDifficulty>This sentence should be around {difficulty} level.</SentenceDifficulty>
                     <ModalSentenceContainer>
                         <EmojiSelectedPill backgroundColor={'rgba(0,0,0,.3)'}>
                             <TanguEmoji>👺</TanguEmoji>
