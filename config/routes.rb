@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
       #get 'gpt/test', to: 'gpt#test_gpt_api'
       post 'gpt/generate/japanese', to: 'gpt#generateJapanese'
+      post 'gpt/correct/english', to: 'gpt#correctEnglish'
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

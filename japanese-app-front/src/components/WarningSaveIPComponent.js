@@ -183,7 +183,7 @@ const WarningSaveIPComponent = ({onClose, loadingCallback, displayExercicesCallb
                     : 
                     `Using the "AI output exercices" feature cost a lot of money.
                     Because JAPP is a free app, I can't afford to pay for it.
-                    Your IP address will be saved to prevent abuse, so you can use it only once every 24 hours.
+                    Your IP address will be saved to prevent abuse, so you can use it only once every 1 hour.
                     `
                     }
                     In the future, I will add a credit system to allow you to use it more often.

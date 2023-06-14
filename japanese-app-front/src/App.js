@@ -520,6 +520,7 @@ function App() {
       {displayModalReviewGPT && 
       <ReviewGPTComponent
         onClose={setDisplayModalReviewGPT.bind(this, false)}
+        callbackFlashMessage={(m, t) => {displayFlashMessageHandler(m, t)}}
         cards={reviewCards}
       />
       }

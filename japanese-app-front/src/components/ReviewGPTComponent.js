@@ -83,7 +83,8 @@ const ModalContentBorder = styled.div`
     animation: ${SpinAnimation} 10s ease infinite ;
 
     width: 50%;
-    height: 50%;
+
+    min-height: 60%;
 
     //adapt to mobile
     @media (max-width: 907px) {
@@ -97,10 +98,16 @@ const ModalContent = styled.div`
     background-color: #424549;
     border-radius: 0.25em;
     width: 100%;
-    height: 100%;
+    height: 35rem;
+
 
     :focus {
         outline: none;
+    }
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        height: 99vh;
     }
 `;
 
@@ -126,13 +133,12 @@ const ModalWordsContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2.5rem 1rem;
+    padding: 1.5rem 1rem .5rem 1rem;
     border-top-left-radius: 0.25em;
     border-top-right-radius: 0.25em;
 
     //adapt to mobile
     @media (max-width: 907px) {
-        flex-direction: column;
         padding: 0.5rem 1rem;
     }
 `;
@@ -150,8 +156,7 @@ const WordsSelectedPill = styled.div`
     margin: 0.5rem 0.5rem;
     //adapt to mobile
     @media (max-width: 907px) {
-        margin-top: .12rem;
-        padding: 0.5rem 0.5rem;
+        display: none;
     }
 `;
 
@@ -177,12 +182,12 @@ const SentenceSelectedPill = styled.div`
     margin: 0.5rem 0.5rem;
     //adapt to mobile
     @media (max-width: 907px) {
-        margin-top:2.5rem;
+        margin-top:.1rem;
         padding: 0.5rem 0.5rem;
     }
 `;
 
-const SentenceTranslationInput = styled.input`
+const SentenceTranslationInput = styled.textarea`
     display: block;
     align-items: center;
     justify-content: center;
@@ -194,6 +199,12 @@ const SentenceTranslationInput = styled.input`
     padding: 0.3rem 1rem;
     font-size: 1.3rem;
     margin: 0.5rem 0.5rem;
+
+    ${props => props.disabled ? `
+        pointer-events: none;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        padding: .1rem .1rem;
+    `: ""};
     //adapt to mobile
     @media (max-width: 907px) {
         margin-top:2.5rem;
@@ -303,10 +314,114 @@ const SentenceDifficulty = styled.div`
     }
 `;
 
+const IsTypingAnimation = keyframes`
+    0% {
+        transform: translateY(0.2rem);
+        background-color: rgba(180, 180, 180, 1);
+    }
+    50% {
+        transform: translateY(-0.2rem);
+        background-color: rgba(190, 190, 190, 1);
+    }
+    100% {
+        transform: translateY(0.2rem);
+        background-color: rgba(170, 170, 170, 1);
+    }
+`;
+
+const IsTypingDotsContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    width: 100%;
+    height: 1.5rem;
+    color: rgba(255, 255, 255, 0.6);
+
+    font-size: 1rem;
+    font-style: italic;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+
+    }
+`;
+
+const IsTypingDot = styled.div`
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: rgba(180, 180, 180, 1);
+    margin: 0 0.2rem;
+
+    animation: ${IsTypingAnimation} 1s ease-in-out infinite;
+    animation-delay: ${props => props.delay}s;
+`;
+
+const Grade = styled.span`
+    font-size: 1rem;
+    font-weight: bold;
+    color: ${props => props.grade >= 8 ? "rgb(32, 177, 114)" : props.grade >= 5 ? "yellow" : "red"};
+`;
+
+const AdviceTitleContainer = styled.div`
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.8);
+    margin-left: 2rem;
+    margin-bottom: -2.3rem;
+`;
+
+const AdviceTitle = styled.span`
+    background-color: white;
+`;
+
+const Advice = styled.div`
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+`;
+
+const SentenceCorrection = styled.span`
+    color: rgba(0, 0, 0, 1);
+    padding: 0 0.5rem;
+    border-radius: 0.5rem;
+    background-color: rgba(133, 255, 203, 1);
+`;
+
+const ResponseTextContainer = styled.div`
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    height: 15rem;
+
+    color: rgba(0, 0, 0, 1);
+
+    overflow-y: scroll;
+`;
+
+const AppearAnimation = keyframes`
+    0% {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0rem);
+    }
+`;
+
+const AppearResponseContainer = styled.div`
+    animation: ${AppearAnimation} 2s ease-in-out;
+`;
 
 const API_GPT = process.env.REACT_APP_API_GPT;
 
-const ReviewGPTComponent = ({cards, onClose, callBackFlashMessage}) => {
+const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [cardsToReview, setCardsToReview] = useState([]);
@@ -315,6 +430,13 @@ const ReviewGPTComponent = ({cards, onClose, callBackFlashMessage}) => {
     const [difficulty, setDifficulty] = useState("");
     const [sentenceTranslation, setSentenceTranslation] = useState("");
     const [questionNumber, setQuestionNumber] = useState(0);
+
+    const [isCorrection, setIsCorrection] = useState(false);
+    const [sentenceCorrection, setSentenceCorrection] = useState("");
+    const [sentenceCorrectionReading, setSentenceCorrectionReading] = useState("");
+    const [grammarAdvice, setGrammarAdvice] = useState("");
+    const [generalAdvice, setGeneralAdvice] = useState("");
+    const [grade, setGrade] = useState("");
 
     const selectRandomCards = (cards, number = 4) => {
         let availableCards = cards;
@@ -348,6 +470,29 @@ const ReviewGPTComponent = ({cards, onClose, callBackFlashMessage}) => {
             console.log(error);
         }).finally(() => {
             setIsLoading(false);
+        });
+    };
+
+    const sendTranslationHandler = () => {
+        if (sentenceTranslation === "") {
+            callbackFlashMessage("You must write a translation!", "error");
+            return;
+        }
+
+        setIsCorrection(true);
+
+        axios.post(`${API_GPT}correct/english/`, {japanese_sentence: sentence, english_sentence: sentenceTranslation}).then((response) => {
+            let response_gpt = JSON.parse(response.data.choices[0].message.content)[0];
+            console.log(response_gpt);
+
+            setSentenceCorrection(response_gpt.proposed_correction);
+            setGrammarAdvice(response_gpt.advice_grammar);
+            setGeneralAdvice(response_gpt.advice_general);
+            setGrade(response_gpt.grade);
+        }).catch((error) => {
+            console.log(error);
+        }).finally(() => {
+            
         });
     };
 
@@ -399,9 +544,48 @@ const ReviewGPTComponent = ({cards, onClose, callBackFlashMessage}) => {
                         <EmojiSelectedPill backgroundColor={'rgba(0,0,0,.3)'}>
                             <TanguEmoji>👺</TanguEmoji>
                         </EmojiSelectedPill>
-                        <SentenceTranslationInput placeholder={"Translate the sentence !"}/>
+                        <SentenceTranslationInput onChange={(e) => {setSentenceTranslation(e.target.value)}} disabled={isCorrection} placeholder={"Translate the sentence !"}/>
                     </ModalSentenceContainer>
-                    <ModalButtonSend color={'rgba(0,0,0,.3)'}>Send</ModalButtonSend>
+                    {!isCorrection && <ModalButtonSend onClick={sendTranslationHandler} color={'rgba(0,0,0,.3)'}>Send</ModalButtonSend>}
+                    {isCorrection &&
+                    <AppearResponseContainer>
+                    <ModalSentenceContainer>
+                        <EmojiSelectedPill backgroundColor={'white'}>
+                            <RobotEmoji position={"relative"}>🤖</RobotEmoji>
+                        </EmojiSelectedPill>
+                        <SentenceSelectedPill>
+                            {
+                                sentenceCorrection !== "" && grammarAdvice !== "" && generalAdvice !== "" ? 
+                                <ResponseTextContainer>
+                                    I would give the student a <Grade grade={grade.substring(0, grade.indexOf('/'))}>{grade}</Grade> for this sentence. <br/>
+                                    <AdviceTitleContainer>
+                                        <AdviceTitle>Proposition</AdviceTitle>
+                                    </AdviceTitleContainer><br/>
+                                    <Advice>
+                                        <SentenceCorrection>{sentenceCorrection}</SentenceCorrection>
+                                    </Advice>
+                                    
+                                    <AdviceTitleContainer>
+                                        <AdviceTitle>Grammar advice</AdviceTitle>
+                                    </AdviceTitleContainer> <br/>
+                                    <Advice>{highlightWords(grammarAdvice, cardsToReview)}</Advice> 
+                                    <AdviceTitleContainer>
+                                        <AdviceTitle>General advice</AdviceTitle>
+                                    </AdviceTitleContainer> <br/>
+                                    <Advice>{highlightWords(generalAdvice, cardsToReview)}</Advice>
+                                </ResponseTextContainer>
+                                :
+                                <IsTypingDotsContainer>
+                                    <IsTypingDot delay={0}/>
+                                    <IsTypingDot delay={0.2}/>
+                                    <IsTypingDot delay={0.4}/>
+                                </IsTypingDotsContainer>
+                            }
+                                
+                        </SentenceSelectedPill>
+                    </ModalSentenceContainer>
+                    </AppearResponseContainer>
+                    }
                     </>
                     }
                     
