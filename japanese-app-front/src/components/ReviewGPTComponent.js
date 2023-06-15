@@ -112,13 +112,19 @@ const ModalContent = styled.div`
 `;
 
 const SpinnerContainer = styled.div`
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
+    margin-top: -1rem;
 
-    background-color: rgba(0, 0, 0, 0.3);
     border-radius: 0.25em;
+
+    //adapt to mobile
+    @media (max-width: 907px) {
+        margin-top: -2.5rem;
+    }
 `;
 
 const Spinner = styled.div`
@@ -139,7 +145,9 @@ const ModalWordsContainer = styled.div`
 
     //adapt to mobile
     @media (max-width: 907px) {
-        padding: 0.5rem 1rem;
+        flex-direction: column;
+        padding: .1rem 1rem .5rem 1rem;
+        flex-wrap: wrap;
     }
 `;
 
@@ -153,10 +161,14 @@ const WordsSelectedPill = styled.div`
     border-radius: 0.25em;
     padding: 0.3rem 1rem;
     font-size: 1.3rem;
-    margin: 0.5rem 0.5rem;
     //adapt to mobile
     @media (max-width: 907px) {
-        display: none;
+        //each row
+        width: 20rem;
+        margin: 0.1rem 0.1rem;
+        padding: 0.1rem 1rem;
+        flex-wrap: wrap;
+
     }
 `;
 
@@ -207,7 +219,7 @@ const SentenceTranslationInput = styled.textarea`
     `: ""};
     //adapt to mobile
     @media (max-width: 907px) {
-        margin-top:2.5rem;
+        margin-top: 1rem;
         padding: 0.5rem 0.5rem;
     }
 `;
@@ -416,8 +428,35 @@ const AppearAnimation = keyframes`
 `;
 
 const AppearResponseContainer = styled.div`
-    animation: ${AppearAnimation} 2s ease-in-out;
+    opacity: 0;
+    animation: ${AppearAnimation} ${props => props.time}s ease-in-out;
+    animation-delay:${props => props.delay}ms;
+    animation-fill-mode: forwards;
 `;
+
+const NextExerciseButton = styled.button`
+    position: sticky;
+    background-color: rgb(32, 177, 114);
+    float: right;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.3rem 1rem;
+    margin-top: .3rem;
+    bottom: 0;
+    font-size: 1rem;
+    opacity: 0.8;
+
+    &:hover {
+        cursor: pointer;
+        opacity: 1;
+
+    }
+    &:active {
+        transform: scale(0.95);
+    }
+`;
+
 
 const API_GPT = process.env.REACT_APP_API_GPT;
 
@@ -496,6 +535,30 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
         });
     };
 
+    const nextQuestionHandler = () => {
+        if (questionNumber === 10) {
+            onClose();
+            return;
+        }
+
+        setQuestionNumber(questionNumber + 1);
+        setIsCorrection(false);
+
+        setSentenceTranslation("");
+        setSentenceCorrection("");
+        setGrammarAdvice("");
+        setGeneralAdvice("");
+        setGrade("");
+        setSentence("");
+        setSentenceReading("");
+        setDifficulty("");
+
+        setIsLoading(true);
+
+        let rcards = selectRandomCards(cards.map(card => card.slug));
+        setCardsToReview(rcards);
+    };
+
     useEffect(() => {
         console.log(cards);
         let rcards = selectRandomCards(cards.map(card => card.slug));
@@ -514,6 +577,9 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
             <ExitButtonModal onClick={onClose}>❌</ExitButtonModal>
             <ModalContentBorder>
                 <ModalContent>
+                    <ProgressBar>
+                        <Progress status={"correct"} progress={(questionNumber/10)*100}/>
+                    </ProgressBar>
                     {isLoading ? 
                         <SpinnerContainer>
                             <Spinner />
@@ -521,16 +587,17 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                         </SpinnerContainer>
                     :
                     <>
-                    <ProgressBar>
-                        <Progress status={"correct"} progress={(questionNumber/10)*100}/>
-                    </ProgressBar>
+                    
                     <ModalWordsContainer>
                         {cardsToReview.map((card, index) => {
                             return (
-                                <WordsSelectedPill key={index}>{card}</WordsSelectedPill>
+                                <AppearResponseContainer delay={index*150} time={1}>
+                                    <WordsSelectedPill key={index}>{card}</WordsSelectedPill>
+                                </AppearResponseContainer>
                             )
                         })}
                     </ModalWordsContainer>
+                    <AppearResponseContainer delay={1000} time={1.3}>
                     <ModalSentenceContainer>
                         <EmojiSelectedPill backgroundColor={'white'}>
                             <RobotEmoji position={"relative"}>🤖</RobotEmoji>
@@ -539,7 +606,13 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                             {highlightWords(sentence, cardsToReview)}
                         </SentenceSelectedPill>
                     </ModalSentenceContainer>
-                    <SentenceDifficulty>This sentence should be around {difficulty} level.</SentenceDifficulty>
+                    </AppearResponseContainer>
+                    
+                    <AppearResponseContainer delay={1200} time={1.3}>
+                        <SentenceDifficulty>This sentence should be around {difficulty} level.</SentenceDifficulty>
+                    </AppearResponseContainer>
+
+                    <AppearResponseContainer delay={1850} time={2}>
                     <ModalSentenceContainer>
                         <EmojiSelectedPill backgroundColor={'rgba(0,0,0,.3)'}>
                             <TanguEmoji>👺</TanguEmoji>
@@ -547,8 +620,9 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                         <SentenceTranslationInput onChange={(e) => {setSentenceTranslation(e.target.value)}} disabled={isCorrection} placeholder={"Translate the sentence !"}/>
                     </ModalSentenceContainer>
                     {!isCorrection && <ModalButtonSend onClick={sendTranslationHandler} color={'rgba(0,0,0,.3)'}>Send</ModalButtonSend>}
+                    </AppearResponseContainer>
                     {isCorrection &&
-                    <AppearResponseContainer>
+                    <AppearResponseContainer delay={0} time={1}>
                     <ModalSentenceContainer>
                         <EmojiSelectedPill backgroundColor={'white'}>
                             <RobotEmoji position={"relative"}>🤖</RobotEmoji>
@@ -557,6 +631,7 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                             {
                                 sentenceCorrection !== "" && grammarAdvice !== "" && generalAdvice !== "" ? 
                                 <ResponseTextContainer>
+                                    <NextExerciseButton onClick={nextQuestionHandler}>Next question</NextExerciseButton>
                                     I would give the student a <Grade grade={grade.substring(0, grade.indexOf('/'))}>{grade}</Grade> for this sentence. <br/>
                                     <AdviceTitleContainer>
                                         <AdviceTitle>Proposition</AdviceTitle>
@@ -573,6 +648,7 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                                         <AdviceTitle>General advice</AdviceTitle>
                                     </AdviceTitleContainer> <br/>
                                     <Advice>{highlightWords(generalAdvice, cardsToReview)}</Advice>
+                                    
                                 </ResponseTextContainer>
                                 :
                                 <IsTypingDotsContainer>
@@ -588,8 +664,6 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                     }
                     </>
                     }
-                    
-                    
                 </ModalContent>
             </ModalContentBorder>
         </ModalContainer>
