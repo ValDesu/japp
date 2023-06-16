@@ -202,6 +202,7 @@ const SentenceSelectedPill = styled.div`
 const SentenceTranslationInput = styled.textarea`
     display: block;
     align-items: center;
+    resize: none;
     justify-content: center;
     background-color: rgba(0, 0, 0, .5);
     border: none;
