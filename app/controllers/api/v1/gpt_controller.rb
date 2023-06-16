@@ -67,7 +67,7 @@ class Api::V1::GptController < ApplicationController
                         [{
                           \"sentence_difficulty\":\"choose a CECRL level between A1 and C2 to generate the sentence difficulty\",
                           \"english_sentence\":\"the generated sentence in english\",
-                          \"japanese_words_in_english_sentence\":\"using this RegEx : '(${english_words.join('|')})/gi' all the given words EXACTLY AS HOW THEY APPEAR IN ENGLISH should be selected in english sentence. Separated by a /.\",
+                          \"japanese_words_in_english_sentence\":\"using this RegEx : '(${english_words.join('|')})/gi' all the given words IN ENGLISH should be selected in the english sentence. Separated by a /.\",
                         }]
                         The JSON response:"""
                     }]
@@ -148,11 +148,11 @@ class Api::V1::GptController < ApplicationController
                     },
                     {
                         "role": "user",
-                        "content": """This english sentence \"#{params['english_sentence']}\" has been translated by a student in japanese as \"#{params['japanese_sentence']}\"
+                        "content": """This english sentence \"#{params['japanese_sentence']}\" has been translated by a student in japanese as \"#{params['english_sentence']}\"
                         Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
                         [{
                             \"grade\": \"x/10\",
-                            \"source_phrase\": \"#{params['english_sentence']}\",
+                            \"source_phrase\": \"#{params['japanese_sentence']}\",
                             \"proposed_correction\":\"your own japanese translation, be the most native-like\",
                             \"advice_grammar\":\"advice about the grammar you used in your proposed_correction\",
                             \"advice_general\": \"a general advice for the student to do better next time\"
