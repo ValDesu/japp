@@ -84,7 +84,7 @@ const ModalContentBorder = styled.div`
 
     width: 50%;
 
-    min-height: 60%;
+    min-height: auto;
 
     //adapt to mobile
     @media (max-width: 907px) {
@@ -137,7 +137,7 @@ const Spinner = styled.div`
 
 const ModalWordsContainer = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     padding: 1.5rem 1rem .5rem 1rem;
     border-top-left-radius: 0.25em;
@@ -469,6 +469,7 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
     const [difficulty, setDifficulty] = useState("");
     const [sentenceTranslation, setSentenceTranslation] = useState("");
     const [questionNumber, setQuestionNumber] = useState(0);
+    const [englishCards, setEnglishCards] = useState([]);
 
     const [isCorrection, setIsCorrection] = useState(false);
     const [sentenceCorrection, setSentenceCorrection] = useState("");
@@ -498,15 +499,29 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
     };
 
     const generateSentenceGPT = (rcards) => {
-        axios.post(`${API_GPT}generate/japanese/`, {cards: rcards}).then((response) => {
+        console.log("generateSentenceGPT");
+        let japanese_or_english = questionNumber % 2 === 0 ? "japanese" : "english";
+        axios.post(`${API_GPT}generate/${japanese_or_english}`, {cards: rcards}).then((response) => {
             //setSentence(response.data.sentence);
             let response_gpt = JSON.parse(response.data.choices[0].message.content)[0];
 
-            setSentence(response_gpt.japanese_sentence);
-            setSentenceReading(response_gpt.japanese_sentence_hiragana);
+            if(japanese_or_english === "english") {
+                setSentence(response_gpt.english_sentence);
+                console.log(response_gpt.japanese_words_in_english_sentence.split("/"));
+                setEnglishCards(response_gpt.japanese_words_in_english_sentence.split("/"));
+            }
+
+            if(japanese_or_english === "japanese") {
+                setSentence(response_gpt.japanese_sentence);
+                setSentenceReading(response_gpt.japanese_sentence_hiragana);
+            }
+
             setDifficulty(response_gpt.sentence_difficulty);
+
         }).catch((error) => {
             console.log(error);
+            callbackFlashMessage("An error occured! Please wait.", "error");
+            nextQuestionHandler();
         }).finally(() => {
             setIsLoading(false);
         });
@@ -519,8 +534,8 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
         }
 
         setIsCorrection(true);
-
-        axios.post(`${API_GPT}correct/english/`, {japanese_sentence: sentence, english_sentence: sentenceTranslation}).then((response) => {
+        let japanese_or_english = questionNumber % 2 === 0 ? "english" : "japanese";
+        axios.post(`${API_GPT}correct/${japanese_or_english}`, {japanese_sentence: sentence, english_sentence: sentenceTranslation}).then((response) => {
             let response_gpt = JSON.parse(response.data.choices[0].message.content)[0];
             console.log(response_gpt);
 
@@ -530,6 +545,8 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
             setGrade(response_gpt.grade);
         }).catch((error) => {
             console.log(error);
+            callbackFlashMessage("An error occured! Please wait.", "error");
+            nextQuestionHandler();
         }).finally(() => {
             
         });
@@ -552,6 +569,8 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
         setSentence("");
         setSentenceReading("");
         setDifficulty("");
+        setCardsToReview([]);
+        setEnglishCards([]);
 
         setIsLoading(true);
 
@@ -560,7 +579,6 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
     };
 
     useEffect(() => {
-        console.log(cards);
         let rcards = selectRandomCards(cards.map(card => card.slug));
         setCardsToReview(rcards);
     }, []);
@@ -589,13 +607,25 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                     <>
                     
                     <ModalWordsContainer>
-                        {cardsToReview.map((card, index) => {
+                        {
+                           (questionNumber % 2 === 0) 
+                           ? 
+                           cardsToReview.map((card, index) => {
                             return (
-                                <AppearResponseContainer delay={index*150} time={1}>
-                                    <WordsSelectedPill key={index}>{card}</WordsSelectedPill>
+                                <AppearResponseContainer key={index} delay={index*150} time={1}>
+                                    <WordsSelectedPill >{card}</WordsSelectedPill>
                                 </AppearResponseContainer>
                             )
-                        })}
+                        })
+                           :
+                           englishCards.map((card, index) => {
+                            return (
+                                <AppearResponseContainer key={index} delay={index*150} time={1}>
+                                    <WordsSelectedPill >{card}</WordsSelectedPill>
+                                </AppearResponseContainer>
+                            )
+                        })
+                        }
                     </ModalWordsContainer>
                     <AppearResponseContainer delay={1000} time={1.3}>
                     <ModalSentenceContainer>
@@ -603,7 +633,7 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                             <RobotEmoji position={"relative"}>🤖</RobotEmoji>
                         </EmojiSelectedPill>
                         <SentenceSelectedPill>
-                            {highlightWords(sentence, cardsToReview)}
+                            {highlightWords(sentence, (questionNumber % 2 === 0) ? cardsToReview : englishCards)}
                         </SentenceSelectedPill>
                     </ModalSentenceContainer>
                     </AppearResponseContainer>
@@ -617,7 +647,7 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                         <EmojiSelectedPill backgroundColor={'rgba(0,0,0,.3)'}>
                             <TanguEmoji>👺</TanguEmoji>
                         </EmojiSelectedPill>
-                        <SentenceTranslationInput onChange={(e) => {setSentenceTranslation(e.target.value)}} disabled={isCorrection} placeholder={"Translate the sentence !"}/>
+                        <SentenceTranslationInput onChange={(e) => {setSentenceTranslation(e.target.value)}} disabled={isCorrection} placeholder={`Translate the above sentence ! ${questionNumber %2 === 0 ? "(Any language is fine ! ✨)": "(Use Japanase this time ! 🎌)"}`}/>
                     </ModalSentenceContainer>
                     {!isCorrection && <ModalButtonSend onClick={sendTranslationHandler} color={'rgba(0,0,0,.3)'}>Send</ModalButtonSend>}
                     </AppearResponseContainer>
@@ -643,11 +673,11 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                                     <AdviceTitleContainer>
                                         <AdviceTitle>Grammar advice</AdviceTitle>
                                     </AdviceTitleContainer> <br/>
-                                    <Advice>{highlightWords(grammarAdvice, cardsToReview)}</Advice> 
+                                    <Advice>{highlightWords(grammarAdvice, (questionNumber % 2 === 0) ? cardsToReview : englishCards)}</Advice> 
                                     <AdviceTitleContainer>
                                         <AdviceTitle>General advice</AdviceTitle>
                                     </AdviceTitleContainer> <br/>
-                                    <Advice>{highlightWords(generalAdvice, cardsToReview)}</Advice>
+                                    <Advice>{highlightWords(generalAdvice, (questionNumber % 2 === 0) ? cardsToReview : englishCards)}</Advice>
                                     
                                 </ResponseTextContainer>
                                 :
