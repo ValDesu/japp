@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components';
 import { useEffect, useState } from "react";
+import Confetti from 'react-confetti';
 import axios from 'axios';
 
 
@@ -374,7 +375,6 @@ const IsTypingDot = styled.div`
 `;
 
 const Grade = styled.span`
-    font-size: 1rem;
     font-weight: bold;
     color: ${props => props.grade >= 8 ? "rgb(32, 177, 114)" : props.grade >= 5 ? "yellow" : "red"};
 `;
@@ -479,6 +479,9 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
     const [generalAdvice, setGeneralAdvice] = useState("");
     const [grade, setGrade] = useState("");
 
+    const [isFinished, setIsFinished] = useState(true);
+    const [averageGrade, setAverageGrade] = useState(86);
+
     const selectRandomCards = (cards, number = 4) => {
         let availableCards = cards;
         let randomCards = [];
@@ -491,20 +494,31 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
     };
 
     const highlightWords = (input = "", words) => {
-        const regex = new RegExp(`(${words.join('|')})`, 'gi');
-        const parts = input.split(regex);
-      
-        return parts.map((part, index) =>
-          regex.test(part) ? <HighlightWord key={index}>{part}</HighlightWord> : part
-        ); 
+        try{
+            const regex = new RegExp(`(${words.join('|')})`, 'gi');
+            const parts = input.split(regex);
+          
+            return parts.map((part, index) =>
+              regex.test(part) ? <HighlightWord key={index}>{part}</HighlightWord> : part
+            ); 
+        
+        }catch(e){
+            callbackFlashMessage("Could not highlight words", "error");
+            console.log('input', input);
+            console.log('could not highlight', e);
+            return input;
+        }
     };
+        
 
     const generateSentenceGPT = (rcards) => {
         console.log("generateSentenceGPT");
         let japanese_or_english = questionNumber % 2 === 0 ? "japanese" : "english";
         axios.post(`${API_GPT}generate/${japanese_or_english}`, {cards: rcards}).then((response) => {
-            //setSentence(response.data.sentence);
+            
+            console.log(response_gpt);
             let response_gpt = JSON.parse(response.data.choices[0].message.content)[0];
+            
 
             if(japanese_or_english === "english") {
                 setSentence(response_gpt.english_sentence);
@@ -544,6 +558,13 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
             setGrammarAdvice(response_gpt.advice_grammar);
             setGeneralAdvice(response_gpt.advice_general);
             setGrade(response_gpt.grade);
+            try{
+                setAverageGrade(averageGrade + parseInt(grade.substring(0, grade.indexOf('/'))));
+            }catch(e){
+                callbackFlashMessage("couln't save grade", "error");
+                console.log('could not parse note', e);
+            }
+            
         }).catch((error) => {
             console.log(error);
             callbackFlashMessage("An error occured! Please wait.", "error");
@@ -554,14 +575,9 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
     };
 
     const nextQuestionHandler = () => {
-        if (questionNumber === 10) {
-            onClose();
-            return;
-        }
+        setIsLoading(true);
 
-        setQuestionNumber(questionNumber + 1);
         setIsCorrection(false);
-
         setSentenceTranslation("");
         setSentenceCorrection("");
         setGrammarAdvice("");
@@ -573,10 +589,17 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
         setCardsToReview([]);
         setEnglishCards([]);
 
-        setIsLoading(true);
+        
 
-        let rcards = selectRandomCards(cards.map(card => card.slug));
-        setCardsToReview(rcards);
+        if (questionNumber === 10) {
+            setIsFinished(true);
+            setIsLoading(false);
+        }else{
+            setQuestionNumber(questionNumber + 1);
+
+            let rcards = selectRandomCards(cards.map(card => card.slug));
+            setCardsToReview(rcards);
+        }
     };
 
     useEffect(() => {
@@ -599,6 +622,33 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                     <ProgressBar>
                         <Progress status={"correct"} progress={(questionNumber/10)*100}/>
                     </ProgressBar>
+                    {isFinished ? 
+                        <>
+                        <Confetti
+                        width={window.innerWidth}
+                        height={window.innerHeight}
+                        recycle={false}
+                        gravity={0.08}
+                        numberOfPieces={400}
+                        />
+
+                        <AppearResponseContainer delay={150} time={1.3}>
+                            <br/>
+                            <ModalSentenceContainer>
+                                <EmojiSelectedPill backgroundColor={'white'}>
+                                    <RobotEmoji position={"relative"}>🤖</RobotEmoji>
+                                </EmojiSelectedPill>
+                                <SentenceSelectedPill>
+                                    Congratulations! You finished your review! 🎉 your average grade is <Grade grade={averageGrade}>{averageGrade/10}/10</Grade>.
+                                    <NextExerciseButton onClick={onClose}>Close</NextExerciseButton>
+                                </SentenceSelectedPill>
+                            </ModalSentenceContainer>
+                        </AppearResponseContainer>
+                        
+
+                        </>
+                    :
+                    <>
                     {isLoading ? 
                         <SpinnerContainer>
                             <Spinner />
@@ -692,6 +742,8 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                         </SentenceSelectedPill>
                     </ModalSentenceContainer>
                     </AppearResponseContainer>
+                    }
+                    </>
                     }
                     </>
                     }
