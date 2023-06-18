@@ -376,7 +376,7 @@ const IsTypingDot = styled.div`
 
 const Grade = styled.span`
     font-weight: bold;
-    color: ${props => props.grade >= 8 ? "rgb(32, 177, 114)" : props.grade >= 5 ? "yellow" : "red"};
+    color: ${props => props.grade >= 8 ? "rgb(32, 177, 114)" : props.grade >= 5 ? "#e39f23" : "red"};
 `;
 
 const AdviceTitleContainer = styled.div`
@@ -479,8 +479,8 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
     const [generalAdvice, setGeneralAdvice] = useState("");
     const [grade, setGrade] = useState("");
 
-    const [isFinished, setIsFinished] = useState(true);
-    const [averageGrade, setAverageGrade] = useState(86);
+    const [isFinished, setIsFinished] = useState(false);
+    const [averageGrade, setAverageGrade] = useState(0);
 
     const selectRandomCards = (cards, number = 4) => {
         let availableCards = cards;
@@ -516,19 +516,18 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
         let japanese_or_english = questionNumber % 2 === 0 ? "japanese" : "english";
         axios.post(`${API_GPT}generate/${japanese_or_english}`, {cards: rcards}).then((response) => {
             
+            let response_gpt = JSON.parse(response.data.choices[0].message.function_call.arguments);
             console.log(response_gpt);
-            let response_gpt = JSON.parse(response.data.choices[0].message.content)[0];
             
 
             if(japanese_or_english === "english") {
                 setSentence(response_gpt.english_sentence);
-                console.log(response_gpt.japanese_words_in_english_sentence.split("/"));
-                setEnglishCards(response_gpt.japanese_words_in_english_sentence.split("/"));
+                setEnglishCards(response_gpt.english_words);
             }
 
             if(japanese_or_english === "japanese") {
                 setSentence(response_gpt.japanese_sentence);
-                setSentenceReading(response_gpt.japanese_sentence_hiragana);
+                setSentenceReading(response_gpt.japanese_sentence_reading);
             }
 
             setDifficulty(response_gpt.sentence_difficulty);
@@ -551,19 +550,14 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
         setIsCorrection(true);
         let japanese_or_english = questionNumber % 2 === 0 ? "english" : "japanese";
         axios.post(`${API_GPT}correct/${japanese_or_english}`, {japanese_sentence: sentence, english_sentence: sentenceTranslation}).then((response) => {
-            let response_gpt = JSON.parse(response.data.choices[0].message.content)[0];
+            let response_gpt = JSON.parse(response.data.choices[0].message.function_call.arguments);
             console.log(response_gpt);
 
             setSentenceCorrection(response_gpt.proposed_correction);
             setGrammarAdvice(response_gpt.advice_grammar);
             setGeneralAdvice(response_gpt.advice_general);
             setGrade(response_gpt.grade);
-            try{
-                setAverageGrade(averageGrade + parseInt(grade.substring(0, grade.indexOf('/'))));
-            }catch(e){
-                callbackFlashMessage("couln't save grade", "error");
-                console.log('could not parse note', e);
-            }
+            setAverageGrade(averageGrade + parseInt(response_gpt.grade));
             
         }).catch((error) => {
             console.log(error);
@@ -713,7 +707,7 @@ const ReviewGPTComponent = ({cards, onClose, callbackFlashMessage}) => {
                                 sentenceCorrection !== "" && grammarAdvice !== "" && generalAdvice !== "" ? 
                                 <ResponseTextContainer>
                                     <NextExerciseButton onClick={nextQuestionHandler}>Next question</NextExerciseButton>
-                                    I would give the student a <Grade grade={grade.substring(0, grade.indexOf('/'))}>{grade}</Grade> for this sentence. <br/>
+                                    I would give the student a <Grade grade={grade}>{grade}/10</Grade> for this sentence. <br/>
                                     <AdviceTitleContainer>
                                         <AdviceTitle>Proposition</AdviceTitle>
                                     </AdviceTitleContainer><br/>
