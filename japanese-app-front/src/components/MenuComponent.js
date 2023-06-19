@@ -82,7 +82,7 @@ const BubbleText = styled.span`
 `;
 
 
-const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList, isEditing}) => {
+const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList, isEditing, onReportBug}) => {
     const [displayItems, setDisplayItems] = useState(false);
     
     const OnClickMenuItemsAndHide = (func) => {
@@ -117,10 +117,16 @@ const MenuComponent = ({displayNotification, onCreateNewDeck, onEdit, onDeckList
             bottom={2}
         />
 
+        <MenuItemComponent display={displayItems && !isEditing}
+            btnFunction={OnClickMenuItemsAndHide.bind(this, onReportBug)}
+            text={"Report a bug ⚠️"}
+            bottom={3}
+        />
+
         <MenuItemComponent disabled="true" display={displayItems && !isEditing}
                     btnFunction={null}
                     text={"Mini games"}
-                    bottom={3}
+                    bottom={4}
                 />
         </>
          

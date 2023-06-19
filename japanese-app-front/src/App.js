@@ -9,6 +9,7 @@ import ModalComponent from "./components/ModalComponent";
 import LoadingScreenComponent from "./components/LoadingScreenComponent";
 import FlashMessageComponent from "./components/FlashMessageComponent";
 import MenuComponent from "./components/MenuComponent";
+import ReportBugComponent from "./components/ReportBugComponent";
 import ModalDeckList from "./components/ModalDeckList";
 import ModalEditComponent from "./components/ModalEditComponent";
 import EditNotifierComponent from "./components/EditNotifierComponent";
@@ -252,6 +253,7 @@ function App() {
   const [displayModalNewDeck, setDisplayModalNewDeck] = useState(false);
   const [displayModalDeckList, setDisplayModalDeckList] = useState(false);
   const [displayModalEdit, setDisplayModalEdit] = useState(false);
+  const [displayReportBug, setDisplayReportBug] = useState(false);
   const [displayNotification, setDisplayNotification] = useState("none");
 
   //Review flashcards states
@@ -534,6 +536,13 @@ function App() {
           loadingCallback={(c) => {setLoading(c)}}
         />
       }
+
+      {displayReportBug && 
+        <ReportBugComponent
+          onClose={() => {setDisplayReportBug(false)}}
+          loadingCallback={(c) => {setLoading(c)}}
+        />
+      }
       
       <DonationComponent
         isOpen={displayDonation}
@@ -582,6 +591,7 @@ function App() {
         onCreateNewDeck={setDisplayModalNewDeck.bind(this, true)}
         onDeckList={displayModalDeckListHandler.bind(this, {'name': "", 'page': 0})}
         onEdit={setDisplayModalEdit.bind(this, true)}
+        onReportBug={setDisplayReportBug.bind(this, true)}
       />
       }
             
